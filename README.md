@@ -3,7 +3,7 @@
 <div align="left">
   <img src="./app/assets/images/brand/libnote-logo.png" alt="LibNoteロゴ" width="420">
 
-  <h3>図書館スタッフのための業務ナレッジ共有アプリ</h3>
+  <h3>スタッフのための業務ナレッジ共有アプリ</h3>
 </div>
 
 
