@@ -8,4 +8,11 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  resources :inquiries do
+    member do
+      patch :mark_as_answered
+      patch :approve
+      patch :reject
+    end
+  end
 end

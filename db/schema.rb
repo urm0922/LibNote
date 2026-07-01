@@ -10,13 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_06_30_065324) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_30_212847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_categories_on_name", unique: true
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "inquiry_id", null: false
+    t.bigint "user_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inquiry_id"], name: "index_comments_on_inquiry_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "inquiries", force: :cascade do |t|
     t.string "title", null: false
-    t.string "body", null: false
+    t.text "body", null: false
     t.integer "user_id", null: false
     t.integer "category_id", null: false
     t.integer "status", default: 0, null: false
@@ -38,4 +55,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_06_30_065324) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "comments", "inquiries"
+  add_foreign_key "comments", "users"
 end
