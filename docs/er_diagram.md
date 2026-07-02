@@ -37,8 +37,8 @@ erDiagram
         bigint id PK
         string title "問い合わせタイトル"
         text body "問い合わせ本文"
-        integer user_id FK
-        integer category_id FK
+        integer user_id "ユーザーID（FK）"
+        integer category_id "カテゴリID（DB外部キー制約未設定）"
         integer status "draft, open, answered, approved, rejected"
         datetime created_at
         datetime updated_at
@@ -159,6 +159,6 @@ erDiagram
 
 ## 実装メモ
 
-- `Inquiry` はモデル上 `belongs_to :user` / `belongs_to :category` ですが、現在のDBスキーマでは `inquiries.user_id` と `inquiries.category_id` に外部キー制約がありません。
-- 将来的に外部キー制約を追加する場合は、`inquiries.user_id` と `inquiries.category_id` を `references` で定義する形に寄せると、Railsの関連とDB制約が揃います。
+- `Inquiry` はモデル上 `belongs_to :user` / `belongs_to :category` です。
+- 現在のDBスキーマでは `inquiries.user_id`/ `inquiries.category_id`ともに `users` への外部キー制約が追加済みです。
 - READMEの「ナレッジ一覧表示」「ナレッジ詳細表示」「FAQ化」「マニュアル連携」をDBとして分離するなら、`knowledge_articles` を中心に、必要に応じて `faq_items`、`manuals`、`approvals` を追加する構成が自然です。
