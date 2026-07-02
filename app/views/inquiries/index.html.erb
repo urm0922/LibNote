@@ -1,0 +1,46 @@
+<main class="inquiries-page">
+  <header class="page-header">
+    <div>
+      <h1>問い合わせ一覧</h1>
+      <p><%= @inquiries.size %>件の問い合わせ</p>
+    </div>
+    <%= link_to "新規作成", new_inquiry_path, class: "button button-primary" %>
+  </header>
+
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
+
+  <% if @inquiries.any? %>
+    <div class="inquiry-list">
+      <% @inquiries.each do |inquiry| %>
+        <article class="inquiry-card">
+          <div class="inquiry-card-main">
+            <div class="inquiry-card-meta">
+              <span class="status-badge <%= inquiry_status_class(inquiry) %>">
+                <%= inquiry_status_label(inquiry) %>
+              </span>
+              <span><%= inquiry.category.name %></span>
+              <span><%= inquiry.user.name %></span>
+              <time datetime="<%= inquiry.created_at.iso8601 %>">
+                <%= l inquiry.created_at, format: :long %>
+              </time>
+            </div>
+            <h2><%= link_to inquiry.title, inquiry_path(inquiry) %></h2>
+            <p><%= truncate(inquiry.body, length: 120) %></p>
+          </div>
+          <%= link_to "詳細", inquiry_path(inquiry), class: "button button-secondary" %>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <section class="empty-state">
+      <h2>記事はまだありません</h2>
+      <p>最初の問い合わせを作成できます。</p>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
+    </section>
+  <% end %>
+</main>

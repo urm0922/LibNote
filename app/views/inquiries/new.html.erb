@@ -1,0 +1,14 @@
+<main class="inquiries-page">
+  <nav class="page-nav">
+    <%= link_to "一覧へ戻る", inquiries_path %>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <h1>問い合わせ作成</h1>
+      <p>内容を入力して問い合わせを登録します。</p>
+    </div>
+  </header>
+
+  <%= render "form", inquiry: @inquiry, categories: @categories %>
+</main>

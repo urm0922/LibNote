@@ -1,0 +1,32 @@
+<%= form_with model: inquiry, class: "inquiry-form" do |form| %>
+  <% if inquiry.errors.any? %>
+    <section class="error-summary">
+      <h2><%= inquiry.errors.count %>件のエラーがあります</h2>
+      <ul>
+        <% inquiry.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title, "タイトル" %>
+    <%= form.text_field :title, required: true, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :category_id, "カテゴリ" %>
+    <%= form.collection_select :category_id, categories, :id, :name, { prompt: "選択してください" }, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body, "本文" %>
+    <%= form.text_area :body, rows: 10, required: true %>
+  </div>
+
+  <div class="button-row">
+    <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "button button-primary" %>
+    <%= link_to "キャンセル", inquiry.persisted? ? inquiry_path(inquiry) : inquiries_path, class: "button button-secondary" %>
+  </div>
+<% end %>

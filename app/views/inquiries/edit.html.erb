@@ -1,0 +1,14 @@
+<main class="inquiries-page">
+  <nav class="page-nav">
+    <%= link_to "詳細へ戻る", inquiry_path(@inquiry) %>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <h1>問い合わせ編集</h1>
+      <p>問い合わせ内容を更新します。</p>
+    </div>
+  </header>
+
+  <%= render "form", inquiry: @inquiry, categories: @categories %>
+</main>
