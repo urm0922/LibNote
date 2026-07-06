@@ -5,7 +5,7 @@ class User < ApplicationRecord
   scope :deleted, -> {where.not(deleted_at: nil) }
 
   def soft_delete!
-    update!(active_false, deleted_at: Time.current)
+    update!(active: false, deleted_at: Time.current)
   end
 
   def deactivate!

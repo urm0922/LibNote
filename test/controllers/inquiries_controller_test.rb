@@ -1,7 +1,89 @@
 require "test_helper"
 
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  test "staff cannot view another user's inquiry" do
+    sign_in users(:staff)
+
+    assert_raises ActiveRecord::RecordNotFound do
+      get inquiry_path(inquiries(:other_staff_open))
+    end
+  
+    test "staff only sees own inquiries in index" do
+      sign_in users(:staff)
+
+      get inquiries_path
+
+      assert_response :success
+      assert_includes response.body, inquiries(:staff_open).title
+      assert_not_includes response.body, inquiries(:other_staff_open).title
+    end
+
+    test "staff cannot edit finalized own inquiry" do
+      sign_in users(:staff)
+
+      get edit_inquiry_path(inquiries(:staff_approved))
+
+      assert_redirect_to inquiries_path
+    end
+
+    test "staff cannot update finalized own inquiry" do
+      sign_in users(:staff)
+      inquiry = inquiries(:staff_approved)
+
+      assert_no_changes -> { inquiry.reload.title } do
+        patch inquiry_path(inquiry), params: {
+          inquiry: {
+            title: "Changed title",
+            body: inquiry.body,
+            category_id: inquiry.category_id
+          }
+        }
+      end
+
+      assert_redirected_to inquiry_path(inquiry)
+    end
+
+  test "staff cannot destroy finalized own inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_approved)
+    
+    assert_no_differece "Inquiry.count" do
+      delete inquiry_path(inquiry)
+    end
+  
+    assert_redirected_to inquiry_path(inquiry)
+  end
+
+  test "manager can view another users inquiry" do
+    sign_in users(:manager)
+    get inquiry_path(inquiries(:staff_open))
+
+    assert_response :success
+  end
+
+  test "manager can update finalyzed inquiry" do
+    sign_in users(:manager)
+    inquiry = inquiries(:staff_approved)
+  
+    patch inquiry_path(inquiry), params: {
+      inquiry: {
+        title: "Manager updated"
+        body: inquiry.body
+        category_id: inquiry.category_id
+        }
+      }
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_equal "Manager updated", inquiry.reload.title
+  end
+
+  test "admin can approved any inquiry"
+    sign_in users(:admin)
+    inquiry = inquiries(:staff_answered)
+
+    patch approve_inquiry_path(inquiry)
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_equal "aproved", inquiry.reload.status
+  end
 end

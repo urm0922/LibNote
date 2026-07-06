@@ -4,4 +4,19 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
+staff:
+  nama :"一般スタッフ1"
+  email :"ippan1@example.com"
+  
+other_staff:
+  name :"一般スタッフ2"
+  email :"ippan2@example.com"
+
+manager:
+  name :"指導スタッフ"
+  email :"manager@example.com"
+
+admin:
+  name :"管理者"
+  email :"admin@example.com"
 
