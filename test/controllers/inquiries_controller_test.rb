@@ -3,10 +3,10 @@ require "test_helper"
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)
-
-    assert_raises ActiveRecord::RecordNotFound do
-      get inquiry_path(inquiries(:other_staff_open))
-    end
+    get inquiry_path(inquiries(:other_staff_open))
+    assert_response :not_found
+    
+  end
   
     test "staff only sees own inquiries in index" do
       sign_in users(:staff)
@@ -23,7 +23,7 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
 
       get edit_inquiry_path(inquiries(:staff_approved))
 
-      assert_redirect_to inquiries_path
+      assert_redirected_to inquiries_path
     end
 
     test "staff cannot update finalized own inquiry" do
@@ -47,7 +47,7 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:staff)
     inquiry = inquiries(:staff_approved)
     
-    assert_no_differece "Inquiry.count" do
+    assert_no_difference "Inquiry.count" do
       delete inquiry_path(inquiry)
     end
   
@@ -61,14 +61,14 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "manager can update finalyzed inquiry" do
+  test "manager can update finalized inquiry" do
     sign_in users(:manager)
     inquiry = inquiries(:staff_approved)
   
     patch inquiry_path(inquiry), params: {
       inquiry: {
-        title: "Manager updated"
-        body: inquiry.body
+        title: "Manager updated",
+        body: inquiry.body,
         category_id: inquiry.category_id
         }
       }
@@ -77,13 +77,13 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Manager updated", inquiry.reload.title
   end
 
-  test "admin can approved any inquiry"
+  test "admin can approve any inquiry" do
     sign_in users(:admin)
     inquiry = inquiries(:staff_answered)
 
     patch approve_inquiry_path(inquiry)
 
     assert_redirected_to inquiry_path(inquiry)
-    assert_equal "aproved", inquiry.reload.status
+    assert_equal "approved", inquiry.reload.status
   end
 end

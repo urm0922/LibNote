@@ -14,5 +14,9 @@ Rails.application.routes.draw do
       patch :approve
       patch :reject
     end
+  
+    resources :comments, only:[:create, :destroy]
   end
+
+
 end

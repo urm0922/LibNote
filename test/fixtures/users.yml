@@ -5,18 +5,19 @@
 # below each fixture, per the syntax in the comments below
 #
 staff:
-  nama :"一般スタッフ1"
-  email :"ippan1@example.com"
+  name: "一般スタッフ1"
+  email: "ippan1@example.com"
   
 other_staff:
-  name :"一般スタッフ2"
-  email :"ippan2@example.com"
+  name: "一般スタッフ2"
+  email: "ippan2@example.com"
 
 manager:
-  name :"指導スタッフ"
-  email :"manager@example.com"
+  name: "指導スタッフ"
+  email: "manager@example.com"
+  role: manager
 
 admin:
-  name :"管理者"
-  email :"admin@example.com"
-
+  name: "管理者"
+  email: "admin@example.com"
+  role: admin

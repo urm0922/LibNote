@@ -5,33 +5,38 @@
 # below each fixture, per the syntax in the comments below
 #
 staff_draft:
-  title :"自分の問い合わせ(draft)"
-  user :staff
-  category :general
-  status :draft
+  title: "自分の問い合わせ(draft)"
+  body: "自分の問い合わせ(draft)について"
+  user: staff
+  category: general
+  status: draft
 
 staff_open:
-  title :"自分の問い合わせ(open)"
-  user :staff
-  category :general
-  status :open
+  title: "自分の問い合わせ(open)"
+  body: "自分の問い合わせ(open)について"
+  user: staff
+  category: general
+  status: open
 
 staff_approved:
-  title :"自分の問い合わせ(approved)"
-  user :staff
-  category :general
-  status :approved
+  title: "自分の問い合わせ(approved)"
+  body: "自分の問い合わせ(approved)について"
+  user: staff
+  category: general
+  status: approved
 
 
 staff_answered:
-  title :"自分の問い合わせ(answered)"
-  user :staff
-  category :general
-  status :answered
+  title: "自分の問い合わせ(answered)"
+  body: "自分の問い合わせ(answered)について"
+  user: staff
+  category: general
+  status: answered
 
 
 other_staff_open:
-  title :"他人の問い合わせ(open)"
+  title: "他人の問い合わせ(open)"
+  body: "他人の問い合わせ(open)について"
   user: other_staff
   category: general
   status: open
