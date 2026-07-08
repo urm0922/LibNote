@@ -1,0 +1,45 @@
+@import "bootstrap";
+@import "homes";
+@import "auth";
+@import "inquiries"; 
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.profiler-results {
+  display: none;
+}
+
+.header-nav {
+  display: flex;
+  background-color: rgba(109, 26, 7, 0.959);
+}
+
+.header-logo {
+  margin-right: auto;
+}
+
+.header-logo img {
+  height: auto;
+  mix-blend-mode: lighten;
+  width: max(15vw, 100px);
+}
+
+header div:last-child {
+  margin-right: 30px;
+}
+
+header div {
+  margin-left: 30px;
+  line-height: 60px;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-family: sans-serif;
+}

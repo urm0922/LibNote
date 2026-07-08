@@ -9,3 +9,16 @@
 #   end
 Category.find_or_create_by(name: "貸出・返却")
 Category.find_or_create_by(name: "利用カード")
+
+[
+  { email: "admin@example.com", name: "管理者", role: "admin" },
+  { email: "manager@example.com", name: "マネージャー", role: "manager" }
+].each do |attrs|
+  user = User.find_or_initialize_by(email: attrs[:email])
+  user.assign_attributes(attrs)
+  if user.new_record?
+    user.password = "password"
+    user.password_confirmation = "password"
+  end
+  user.save!
+end

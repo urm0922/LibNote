@@ -1,0 +1,18 @@
+<main class="top-page align-middle">
+  <section class="top-content text-center">
+    <p class="sub-title">君の記録がみんなを救う</p>
+    <h1 class="top-logo">
+      <%= image_tag "top-logo.png", alt: "LibNote" %>
+    </h1>
+
+    <div class="top-actions">
+      <% if user_signed_in? %>
+        <%= link_to "投稿一覧へ", inquiries_path, class: "btn btn-primary me-2" %>
+        <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete },class: "btn btn-success ms-2" %>
+      <% else %>
+        <%= link_to "新規登録", new_user_registration_path, class: "btn btn-primary me-2" %>
+        <%= link_to "ログイン", new_user_session_path, class: "btn btn-success ms-2" %> 
+      <% end %> 
+    </div>
+  </section>
+</main>

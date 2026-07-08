@@ -12,6 +12,12 @@
   </head>
 
   <body>
+    <header class="header-nav">
+      <div class="header-logo"><%= link_to root_path do %><%= image_tag "header-logo.png", alt: "LibNote" %><% end %></div>
+      <div><%= link_to "トップ", root_path, class: "text-white nav-link" %></div>
+      <div><%= link_to "問い合わせ投稿", new_inquiry_path, class: "text-white nav-link" %></div>
+      <div><%= link_to "問い合わせ一覧", inquiries_path, class: "text-white nav-link" %></div>
+    </header>
     <%= yield %>
   </body>
 </html>
