@@ -1,6 +1,8 @@
 require "test_helper"
 
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
+  fixtures :users, :inquiries, :categories
+  
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)
     get inquiry_path(inquiries(:other_staff_open))
@@ -85,5 +87,78 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to inquiry_path(inquiry)
     assert_equal "approved", inquiry.reload.status
+  end
+
+  test "staff cannot see another user's inquiy in search results" do
+    sign_in users(:staff)
+
+    get inquiries_path, params: { q: "open" }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_open).title
+    assert_not_includes response.body, inquiries(:other_staff_open).title
+  end
+
+  test "manager can see another user's inquiry in search results" do
+    sign_in users(:manager)
+    get inquiries_path, params: { q: "open" }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_open).title
+  end
+
+  test "manager does not see another user's draft in index" do
+    sign_in users(:manager)
+
+    get inquiries_path
+
+    assert_response :success
+    assert_includes response.body, inquiries(:manager_draft).title
+    assert_not_includes response.body, inquiries(:staff_draft).title
+  end
+
+  test "admin can see another user's inquiry in search results" do
+    sign_in users(:admin)
+    get inquiries_path, params: { q: "open" }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_open).title
+  end
+
+  test "admin does not see another user's draft in index" do
+    sign_in users(:admin)
+
+    get inquiries_path
+
+    assert_response :success
+    assert_includes response.body, inquiries(:admin_draft).title
+    assert_not_includes response.body, inquiries(:staff_draft).title
+  end
+
+  test "staff can search by keyword" do
+    sign_in users(:staff)
+    get inquiries_path, params: { q: "open" }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_open).title
+    assert_not_includes response.body, inquiries(:staff_approved).title
+  end
+
+  test "staff can search by category" do
+    sign_in users(:staff)
+    get inquiries_path, params: { category_id: categories(:special).id }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_special).title
+    assert_not_includes response.body, inquiries(:staff_open).title
+  end
+
+  test "staff can search by status" do
+    sign_in users(:staff)
+    get inquiries_path, params: { status: "approved" }
+
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_approved).title
+    assert_not_includes response.body, inquiries(:staff_open).title
   end
 end

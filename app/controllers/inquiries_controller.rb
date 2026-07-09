@@ -1,6 +1,6 @@
 class InquiriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_inquiry, except: [:index, :new, :create]
+  before_action :set_inquiry, except: [:index, :new, :create, :confirm]
   before_action :set_categories, only: [:index, :new, :create, :edit, :update]
 
   def mark_as_answered
@@ -32,7 +32,10 @@ class InquiriesController < ApplicationController
 
   def index
     if current_user.admin? || current_user.manager?
-      @inquiries = Inquiry.includes(:user, :category).order(created_at: :desc)
+      @inquiries = Inquiry.where.not(status: :draft)
+                          .or(Inquiry.where(status: :draft, user: current_user))
+                          .includes(:user, :category)
+                          .order(created_at: :desc)
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])
@@ -52,13 +55,17 @@ class InquiriesController < ApplicationController
 
   def create
     @inquiry = current_user.inquiries.new(inquiry_params)
-    @inquiry.status = :open
+    # @inquiry.status = :open
 
     if @inquiry.save
       redirect_to inquiry_path(@inquiry), notice: "問い合わせを作成しました"
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def confirm
+    @inquiries = current_user.inquiries.draft
   end
 
   def show
@@ -115,6 +122,6 @@ class InquiriesController < ApplicationController
   end
 
   def inquiry_params
-    params.require(:inquiry).permit(:title, :body, :category_id)
+    params.require(:inquiry).permit(:title, :body, :category_id, :status)
   end
 end

@@ -24,6 +24,13 @@
     <%= form.label :body, "本文" %>
     <%= form.text_area :body, rows: 10, required: true %>
   </div>
+  
+  <% if inquiry.draft? %>
+    <div class="form-status">
+      <%= form.select :status, options_for_select(Inquiry.statuses.slice(:draft, :open).keys.map {|k| [I18n.t("enums.inpuiry.statuses.#{k}"), k]}) %>
+    </div>
+  <% else %>
+  <% end %>
 
   <div class="button-row">
     <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "button button-primary" %>

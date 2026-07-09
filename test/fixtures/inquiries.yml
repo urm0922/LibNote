@@ -11,11 +11,32 @@ staff_draft:
   category: general
   status: draft
 
+manager_draft:
+  title: "manager draft"
+  body: "manager draft body"
+  user: manager
+  category: general
+  status: draft
+
+admin_draft:
+  title: "admin draft"
+  body: "admin draft body"
+  user: admin
+  category: general
+  status: draft
+
 staff_open:
   title: "自分の問い合わせ(open)"
   body: "自分の問い合わせ(open)について"
   user: staff
   category: general
+  status: open
+
+staff_special:
+  title: "自分の特殊な問い合わせ(open)"
+  body: "自分の特殊な問い合わせ(open)について"
+  user: staff
+  category: special
   status: open
 
 staff_approved:

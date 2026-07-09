@@ -14,6 +14,9 @@ Rails.application.routes.draw do
       patch :approve
       patch :reject
     end
+    collection do
+      get 'confirm'
+    end
   
     resources :comments, only:[:create, :destroy]
   end

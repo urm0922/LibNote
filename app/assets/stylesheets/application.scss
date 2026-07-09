@@ -42,4 +42,8 @@ header div {
 .nav-link {
   text-decoration: none;
   font-family: sans-serif;
+  }
+
+.nav-link a:hover {
+  opacity: 0.5;
 }
