@@ -12,7 +12,9 @@ Category.find_or_create_by(name: "利用カード")
 
 [
   { email: "admin@example.com", name: "管理者", role: "admin" },
-  { email: "manager@example.com", name: "マネージャー", role: "manager" }
+  { email: "manager@example.com", name: "マネージャー", role: "manager" },
+  { email: "staff1@example.com", name: "スタッフ1", role: "staff" },
+  { email: "staff2@example.com", name: "スタッフ2", role: "staff" }
 ].each do |attrs|
   user = User.find_or_initialize_by(email: attrs[:email])
   user.assign_attributes(attrs)

@@ -1,0 +1,41 @@
+ja:
+  enums:
+    inquiry:
+      status:
+        draft: "下書き"
+        open: "未対応"
+        answered: "回答済み"
+        approved: "承認済み"
+        rejected: "差し戻し"
+  
+  time:
+    formats:
+      long: "%Y年%m月%d日 %H:%M"
+
+  date:
+    formats:
+      long: "%Y年%m月%d日"
+
+  devise:
+    sessions:
+      signed_in: "ログインしました。"
+      signed_out: "ログアウトしました。"
+      already_signed_out: "すでにログアウトしています。"
+
+    failure:
+      already_authenticated: "すでにログインしています。"
+      unauthenticated: "ログインしてください。"
+      invalid: "メールアドレスまたはパスワードが違います。"
+      inactive: "アカウントが有効化されていません。"
+      timeout: "セッションがタイムアウトしました。もう一度ログインしてください。"
+
+    registrations:
+      signed_up: "アカウント登録が完了しました。"
+      updated: "アカウント情報を更新しました。"
+      destroyed: "アカウントを削除しました。"
+
+  errors:
+    messages:
+      not_saved:
+        one: "1件のエラーがあるため保存できませんでした。"
+        other: "%{count}件のエラーがあるため保存できませんでした。"

@@ -5,4 +5,19 @@ class Inquiry < ApplicationRecord
   validates :title, presence: true
   validates :body, presence: true
   enum status: { draft: 0, open: 1, answered: 2, approved: 3, rejected: 4 }
+
+  scope :search_keyword, ->(keyword) {
+    if keyword.present?
+      escaped_keyword = sanitize_sql_like(keyword)
+      where("title LIKE :keyword OR body LIKE :keyword", keyword: "%#{escaped_keyword}%")
+    end
+  }
+
+  scope :by_category, ->(category_id) {
+    where(category_id: category_id) if category_id.present?
+  }
+
+  scope :by_status, ->(status) {
+    where(status: statuses[status]) if status.present? && statuses.key?(status)
+  }
 end

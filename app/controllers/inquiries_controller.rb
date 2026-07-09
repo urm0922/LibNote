@@ -1,7 +1,7 @@
 class InquiriesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_inquiry, except: [:index, :new, :create]
-  before_action :set_categories, only: [:new, :create, :edit, :update]
+  before_action :set_categories, only: [:index, :new, :create, :edit, :update]
 
   def mark_as_answered
     if current_user.admin? || current_user.manager?
@@ -33,8 +33,16 @@ class InquiriesController < ApplicationController
   def index
     if current_user.admin? || current_user.manager?
       @inquiries = Inquiry.includes(:user, :category).order(created_at: :desc)
+      @inquiries = @inquiries.search_keyword(params[:q])
+                             .by_category(params[:category_id])
+                             .by_status(params[:status])
+                             .order(created_at: :desc)
     else
       @inquiries = current_user.inquiries.includes(:user, :category).order(created_at: :desc)
+      @inquiries = @inquiries.search_keyword(params[:q])
+                             .by_category(params[:category_id])
+                             .by_status(params[:status])
+                             .order(created_at: :desc)
     end
   end
 

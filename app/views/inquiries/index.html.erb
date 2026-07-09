@@ -4,8 +4,19 @@
       <h1>問い合わせ一覧</h1>
       <p><%= @inquiries.size %>件の問い合わせ</p>
     </div>
-    <%= link_to "新規作成", new_inquiry_path, class: "button button-primary" %>
+    <%= link_to "新規作成", new_inquiry_path, class: "btn btn-primary" %>
   </header>
+  <div class="search-form row mt-3 ms-3 align-self-end">
+      <%= form_with url:inquiries_path, method: :get, local: true do |f| %>
+        <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.label :category_id, "カテゴリ" %>
+        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
+        <%= f.label :status, "ステータス" %>
+        <%= f.select :status, Inquiry.statuses.keys.map { |status| [I18n.t("enums.inquiry.status.#{status}"), status] }, { include_blank: "選択してください", selected: params[:status] } %>
+        <%= f.submit "検索する", name: nil %>
+        <%= link_to "条件クリア", inquiries_path, class: "btn btn-success"%>
+      <% end %>
+    </div>
 
   <% if notice.present? %>
     <p class="flash flash-notice"><%= notice %></p>
