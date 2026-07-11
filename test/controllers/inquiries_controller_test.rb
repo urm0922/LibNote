@@ -161,4 +161,70 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, inquiries(:staff_approved).title
     assert_not_includes response.body, inquiries(:staff_open).title
   end
+
+  test "staff cannot update answered inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_answered)
+
+    assert_no_changes -> { inquiry.reload.title} do
+      assert_no_changes -> {inquiry.reload.status} do
+        patch inquiry_path(inquiry), params: {
+          inquiry: {
+            title: "Changed title",
+            body: inquiry.body,
+            category_id: inquiry.category_id,
+            status: "approved"
+          }
+        }
+      end
+    end
+  end
+
+  test "staff cannot update rejected inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_rejected)
+
+    assert_no_changes -> { inquiry.reload.title } do
+      assert_no_changes -> {inquiry.reload.status } do
+        patch inquiry_path(inquiry), params: {
+          inquiry: {
+            title: "Changed title",
+            body: inquiry.body,
+            category_id: inquiry.category_id,
+            status: "approved"
+          }
+        }
+      end
+    end
+  end
+  
+  test "staff cannot update inquiry with blank status" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_draft)
+    assert_no_changes -> { inquiry.reload.title } do
+      patch inquiry_path(inquiry), params: {
+          inquiry: {
+          title: "Changed title",
+          body: inquiry.body,
+          category_id: inquiry.category_id,
+          status: ""
+          }
+      }
+    end
+  end
+
+  test "staff cannot create inquiry with invalid status" do
+    sign_in users(:staff)
+    assert_no_difference "Inquiry.count" do
+      post inquiries_path, params: {
+        inquiry: {
+          title: "Bad status",
+          body: "body",
+          category_id: categories(:general).id,
+          status: "approved"
+        }
+      }
+    end
+  end
+
 end

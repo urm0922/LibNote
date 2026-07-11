@@ -55,6 +55,14 @@ staff_answered:
   status: answered
 
 
+staff_rejected:
+  title: "自分の問い合わせ(rejected)"
+  body: "自分の問い合わせ(rejected)について"
+  user: staff
+  category: general
+  status: rejected
+
+
 other_staff_open:
   title: "他人の問い合わせ(open)"
   body: "他人の問い合わせ(open)について"

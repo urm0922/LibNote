@@ -27,7 +27,8 @@
   
   <% if inquiry.draft? %>
     <div class="form-status">
-      <%= form.select :status, options_for_select(Inquiry.statuses.slice(:draft, :open).keys.map {|k| [I18n.t("enums.inpuiry.statuses.#{k}"), k]}) %>
+      <% status_options = %w[draft open].map { |status| [t(".status_options.#{status}"), status]} %>
+      <%= form.select :status, options_for_select(status_options, inquiry.status) %>
     </div>
   <% else %>
   <% end %>

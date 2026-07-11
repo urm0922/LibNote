@@ -8,6 +8,12 @@ ja:
         approved: "承認済み"
         rejected: "差し戻し"
   
+  inquiries:
+    form:
+      status_options:
+        draft: "下書き保存"
+        open: "新規投稿"
+  
   time:
     formats:
       long: "%Y年%m月%d日 %H:%M"

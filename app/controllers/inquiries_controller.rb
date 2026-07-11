@@ -54,8 +54,13 @@ class InquiriesController < ApplicationController
   end
 
   def create
+    unless params.dig(:inquiry, :status).in?(%w[draft open])
+      @inquiry = current_user.inquiries.new(inquiry_params.except(:status))
+      render :new, status: :unprocessable_entity
+      return
+    end
+      
     @inquiry = current_user.inquiries.new(inquiry_params)
-    # @inquiry.status = :open
 
     if @inquiry.save
       redirect_to inquiry_path(@inquiry), notice: "問い合わせを作成しました"
@@ -78,20 +83,32 @@ class InquiriesController < ApplicationController
   end
 
   def update
-    if @inquiry.draft? || @inquiry.open?
-      if @inquiry.update(inquiry_params)
-      redirect_to inquiry_path(@inquiry), notice: "問い合わせを更新しました"
-      else
-      render :edit, status: :unprocessable_entity
-      end
-    elsif current_user.admin? || current_user.manager?
-      if @inquiry.update(inquiry_params)
-        redirect_to inquiry_path(@inquiry), notice: "問い合わせを更新しました"
-      else
-        render :edit, status: :unprocessable_entity
-      end
-    else
+    unless @inquiry.draft? || @inquiry.open? || current_user.manager? || current_user.admin?
       redirect_to inquiry_path(@inquiry), alert: "更新できません"
+      return
+    end
+
+    requested_status = params.dig(:inquiry, :status)
+    allowed_statuses =
+      if current_user.admin?
+        %w[draft open answered approved rejected]
+      elsif current_user.manager?
+        %w[draft open answered rejected]
+      else
+        %w[draft open]
+      end
+      
+    if requested_status && !requested_status.in?(allowed_statuses)
+      @inquiry.assign_attributes(inquiry_params.except(:status))
+      @inquiry.errors.add(:status, "が不正です")
+      render :edit, status: :unprocessable_entity
+      return
+    end
+
+    if @inquiry.update(inquiry_params)
+    redirect_to inquiry_path(@inquiry), notice: "問い合わせを更新しました"
+    else
+    render :edit, status: :unprocessable_entity
     end
   end
 
