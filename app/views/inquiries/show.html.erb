@@ -37,6 +37,27 @@
       <%= simple_format(@inquiry.body) %>
     </div>
 
+    <section class="comments ms-5 mt-5">
+      <%= form_with model:[@inquiry, @comment], local: true do |f| %>
+        <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
+        <%= f.submit "送信", class: "btn btn-success mb-4" %>
+      <% end %>
+
+      <p>コメント件数：<%= @comments.count %> 件</p>
+      <% @comments.each do |comment| %>
+        <%= comment.user.name %>
+        <time datetime="<%= comment.created_at.iso8601 %>">
+          <%= l comment.created_at, format: :long %>
+        </time>
+        <%= comment.body %>
+        <% if current_user.admin? || comment.user == current_user %>
+          <div class="comment-delete">
+             <%= button_to "削除", inquiry_comment_path(@inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+          </div>
+        <% end %>
+      <% end %>
+    </section> 
+        
     <% if current_user.admin? || current_user.manager? %>
       <section class="status-actions">
         <h2>ステータス更新</h2>

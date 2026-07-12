@@ -74,6 +74,8 @@ class InquiriesController < ApplicationController
   end
 
   def show
+    @comment = Comment.new
+    @comments = @inquiry.comments.includes(:user).order(created_at: :asc)
   end
 
   def edit
