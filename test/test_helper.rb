@@ -16,4 +16,5 @@ end
 
 class ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
+  self.fixture_paths = ["test/fixtures"]
 end

@@ -4,6 +4,11 @@ class InquiriesController < ApplicationController
   before_action :set_categories, only: [:index, :new, :create, :edit, :update]
 
   def mark_as_answered
+    if @inquiry.approved? && !current_user.admin?
+      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
+      return
+    end
+
     if current_user.admin? || current_user.manager?
       @inquiry.update(status: :answered)
       redirect_to inquiry_path(@inquiry), notice: "回答済みにしました"
@@ -22,6 +27,11 @@ class InquiriesController < ApplicationController
   end
 
   def reject
+    if @inquiry.approved? && !current_user.admin?
+      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
+      return
+    end
+
     if current_user.admin? || current_user.manager?
       @inquiry.update(status: :rejected)
       redirect_to inquiry_path(@inquiry), notice: "差し戻しました"
@@ -79,13 +89,19 @@ class InquiriesController < ApplicationController
   end
 
   def edit
+    if @inquiry.approved? && !current_user.admin?
+      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
+      return
+    end
+
     if !(current_user.admin? || current_user.manager?) && !(@inquiry.draft? || @inquiry.open?) 
-      redirect_to inquiries_path, alert: "確定済みの問い合わせのため編集できません"
+      redirect_to inquiry_path(@inquiry), alert: "確定済みの問い合わせのため編集できません"
     end
   end
 
   def update
-    unless @inquiry.draft? || @inquiry.open? || current_user.manager? || current_user.admin?
+    can_update = current_user.admin? || @inquiry.draft? || @inquiry.open? || (current_user.manager? && !@inquiry.approved?)
+    unless can_update
       redirect_to inquiry_path(@inquiry), alert: "更新できません"
       return
     end
@@ -115,10 +131,14 @@ class InquiriesController < ApplicationController
   end
 
   def destroy
-    if current_user.admin? || current_user.manager?
-      @inquiry.destroy
-      redirect_to inquiries_path, notice: "問い合わせを削除しました"
-    elsif @inquiry.open? || @inquiry.draft?
+    can_destroy = if current_user.admin?
+                    %w[draft open answered approved rejected]
+                  elsif current_user.manager?
+                    %w[draft open answered rejected]
+                  else
+                    %w[draft open]
+                  end
+    if @inquiry.status.in?(can_destroy)
       @inquiry.destroy
       redirect_to inquiries_path, notice: "問い合わせを削除しました"
     else

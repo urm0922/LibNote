@@ -1,6 +1,6 @@
 <main class="inquiries-page">
   <nav class="page-nav">
-    <%= link_to "一覧へ戻る", inquiries_path %>
+    <%= link_to "承認済ナレッジ一覧へ戻る", knowledges_path %>
   </nav>
 
   <% if notice.present? %>
@@ -14,18 +14,14 @@
     <header class="page-header">
       <div>
         <div class="inquiry-card-meta">
-          <span class="status-badge <%= inquiry_status_class(@inquiry) %>">
-            <%= inquiry_status_label(@inquiry) %>
-          </span>
           <span><%= @inquiry.category.name %></span>
-          <span><%= @inquiry.user.name %></span>
           <time datetime="<%= @inquiry.created_at.iso8601 %>">
             <%= l @inquiry.created_at, format: :long %>
           </time>
         </div>
         <h1><%= @inquiry.title %></h1>
       </div>
-      <% if can_edit_inquiry?(@inquiry) %>
+      <% if current_user.admin? %>
         <div class="button-row">
           <%= link_to "編集", edit_inquiry_path(@inquiry), class: "button button-secondary" %>
           <%= button_to "削除", inquiry_path(@inquiry), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
@@ -38,19 +34,14 @@
     </div>
 
     <section class="comments ms-5 mt-5">
-      <%= form_with model:[@inquiry, @comment], local: true do |f| %>
-        <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
-        <%= f.submit "送信", class: "btn btn-success mb-4" %>
-      <% end %>
-
-      <p>コメント件数：<%= @comments.count %> 件</p>
+    <p>コメント件数：<%= @comments.count %> 件</p>
       <% @comments.each do |comment| %>
-        <%= comment.user.name %>
+        <%= comment.user.role %>
         <time datetime="<%= comment.created_at.iso8601 %>">
           <%= l comment.created_at, format: :long %>
         </time>
         <%= comment.body %>
-        <% if current_user.admin? || comment.user == current_user %>
+        <% if current_user.admin? %>
           <div class="comment-delete">
              <%= button_to "削除", inquiry_comment_path(@inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
           </div>
@@ -62,25 +53,9 @@
       <section class="status-actions">
         <h2>ステータス更新</h2>
         <div class="button-row">
-          <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "button button-secondary" %>
-          <% if current_user.admin? %>
-            <%= button_to "承認する", approve_inquiry_path(@inquiry), method: :patch, class: "button button-primary" %>
-          <% end %>
           <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "button button-danger" %>
         </div>
       </section>
     <% end %>
-    <% if current_user.manager? %>
-      <% unless @inquiry.approved? %>
-        <section class="status-actions">
-          <h2>ステータス更新</h2>
-          <div class="button-row">
-            <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "button button-secondary" %>
-            <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "button button-danger" %>
-          </div>
-        </section>
-      <% end %>
-    <% end %>
-    
   </article>
 </main>

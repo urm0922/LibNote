@@ -1,0 +1,51 @@
+<main class="inquiries-page">
+  <header class="page-header">
+    <div>
+      <h1>承認済ナレッジ一覧</h1>
+      <p><%= @inquiries.size %>件の承認済ナレッジ</p>
+    </div>
+    <%= link_to "問い合わせ新規作成", new_inquiry_path, class: "btn btn-primary" %>
+  </header>
+  <div class="search-form row mt-3 ms-3 align-self-end">
+      <%= form_with url:knowledges_path, method: :get, local: true do |f| %>
+        <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.label :category_id, "カテゴリ" %>
+        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
+        <%= f.submit "検索する", name: nil %>
+        <%= link_to "条件クリア", knowledges_path, class: "btn btn-success"%>
+      <% end %>
+    </div>
+
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
+
+  <% if @inquiries.any? %>
+    <div class="inquiry-list">
+      <% @inquiries.each do |inquiry| %>
+        <article class="inquiry-card">
+          <div class="inquiry-card-main">
+            <div class="inquiry-card-meta">
+              <span><%= inquiry.category.name %></span>
+              <time datetime="<%= inquiry.created_at.iso8601 %>">
+                <%= l inquiry.created_at, format: :long %>
+              </time>
+            </div>
+            <h2><%= link_to inquiry.title, knowledge_path(inquiry) %></h2>
+            <p><%= truncate(inquiry.body, length: 120) %></p>
+          </div>
+          <%= link_to "詳細", knowledge_path(inquiry), class: "button button-secondary" %>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <section class="empty-state">
+      <h2>承認済ナレッジはまだありません</h2>
+      <p>問い合わせを作成できます。</p>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
+    </section>
+  <% end %>
+</main>

@@ -14,6 +14,6 @@ module InquiriesHelper
   end
 
   def can_edit_inquiry?(inquiry)
-    current_user.admin? || current_user.manager? || (inquiry.user_id == current_user.id && (inquiry.draft? || inquiry.open?))
+    (inquiry.user_id == current_user.id && (inquiry.draft? || inquiry.open?)) || (current_user.manager? && !inquiry.approved?) || current_user.admin?
   end
 end

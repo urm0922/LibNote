@@ -1,18 +1,32 @@
 require "test_helper"
 
 class CommentsControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  fixtures :users, :inquiries, :categories, :comments
 
-  test "staff cannot destroy other user's comments" do
-    sign_in users(:manager)
-    inquiry = (:staff_open)
-    post inquiry_comments_path(inquiry), params: {
-      comments: { body: inquiry.body }}
-    
-    sign_out users(:manager)
+  test "staff cannot destroy comments in approved inquiry" do
     sign_in users(:staff)
-    assert_no_changes 
+    inquiry = inquiries(:staff_approved)
+    
+    assert_no_difference "Comment.count" do
+      delete inquiry_comment_path(inquiry, comments(:comment_as_staff_approved))
+    end
+
+    assert_redirected_to inquiry_path(inquiry)
+  end
+
+  test "staff cannot create comment in approved inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_approved)
+
+    assert_no_difference "Comment.count" do
+      post inquiry_comments_path(inquiry), params: { 
+        comment: {
+          body: "cannot create comment"
+        }
+      }
+    end
+
+    assert_redirected_to inquiry_path(inquiry)
+  end
 
 end

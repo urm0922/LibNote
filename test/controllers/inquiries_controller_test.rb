@@ -1,7 +1,7 @@
 require "test_helper"
 
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :inquiries, :categories
+  fixtures :users, :inquiries, :categories, :comments
   
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)
@@ -10,40 +10,40 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     
   end
   
-    test "staff only sees own inquiries in index" do
-      sign_in users(:staff)
+  test "staff only sees own inquiries in index" do
+    sign_in users(:staff)
 
-      get inquiries_path
+    get inquiries_path
 
-      assert_response :success
-      assert_includes response.body, inquiries(:staff_open).title
-      assert_not_includes response.body, inquiries(:other_staff_open).title
-    end
+    assert_response :success
+    assert_includes response.body, inquiries(:staff_open).title
+    assert_not_includes response.body, inquiries(:other_staff_open).title
+  end
 
-    test "staff cannot edit finalized own inquiry" do
-      sign_in users(:staff)
+  test "staff cannot edit finalized own inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_approved)
+    get edit_inquiry_path(inquiries(:staff_approved))
 
-      get edit_inquiry_path(inquiries(:staff_approved))
+    assert_redirected_to inquiry_path(inquiry)
+  end
 
-      assert_redirected_to inquiries_path
-    end
+  test "staff cannot update finalized own inquiry" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_approved)
 
-    test "staff cannot update finalized own inquiry" do
-      sign_in users(:staff)
-      inquiry = inquiries(:staff_approved)
-
-      assert_no_changes -> { inquiry.reload.title } do
-        patch inquiry_path(inquiry), params: {
-          inquiry: {
-            title: "Changed title",
-            body: inquiry.body,
-            category_id: inquiry.category_id
-          }
+    assert_no_changes -> { inquiry.reload.title } do
+      patch inquiry_path(inquiry), params: {
+        inquiry: {
+          title: "Changed title",
+          body: inquiry.body,
+          category_id: inquiry.category_id
         }
-      end
+      }
+    end
 
       assert_redirected_to inquiry_path(inquiry)
-    end
+  end
 
   test "staff cannot destroy finalized own inquiry" do
     sign_in users(:staff)
@@ -63,7 +63,7 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "manager can update finalized inquiry" do
+  test "manager cannot update finalized inquiry" do
     sign_in users(:manager)
     inquiry = inquiries(:staff_approved)
   
@@ -76,7 +76,8 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
       }
 
     assert_redirected_to inquiry_path(inquiry)
-    assert_equal "Manager updated", inquiry.reload.title
+    assert_not_equal "Manager updated", inquiry.reload.title
+
   end
 
   test "admin can approve any inquiry" do

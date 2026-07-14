@@ -21,4 +21,8 @@ class Inquiry < ApplicationRecord
   scope :by_status, ->(status) {
     where(status: statuses[status]) if status.present? && statuses.key?(status)
   }
+
+  scope :approved_knowledge, -> {
+    approved.includes(:category, :user).order(updated_at: :desc)
+  }
 end
