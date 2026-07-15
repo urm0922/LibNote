@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_03_012007) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_14_082714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,6 +41,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_03_012007) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "knowledge_articles", force: :cascade do |t|
+    t.bigint "inquiry_id", null: false
+    t.bigint "category_id", null: false
+    t.bigint "author_id", null: false
+    t.string "title", null: false
+    t.text "body", null: false
+    t.integer "status", default: 0, null: false
+    t.boolean "faq_enabled", default: false, null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_knowledge_articles_on_author_id"
+    t.index ["category_id"], name: "index_knowledge_articles_on_category_id"
+    t.index ["inquiry_id"], name: "index_knowledge_articles_on_inquiry_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -61,4 +77,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_03_012007) do
   add_foreign_key "comments", "users"
   add_foreign_key "inquiries", "categories"
   add_foreign_key "inquiries", "users"
+  add_foreign_key "knowledge_articles", "categories"
+  add_foreign_key "knowledge_articles", "inquiries"
+  add_foreign_key "knowledge_articles", "users", column: "author_id"
 end

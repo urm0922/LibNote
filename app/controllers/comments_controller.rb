@@ -25,13 +25,18 @@ class CommentsController < ApplicationController
       comment = @inquiry.comments.find_by(id: params[:id], user_id: current_user.id)
     end
 
-    if comment.inquiry.status.in?(can_comment)
+    unless comment
+      redirect_to inquiry_path(@inquiry), alert: "コメントを削除できませんでした"
+      return
+    end
 
-      if comment&.destroy
-        redirect_to inquiry_path(@inquiry), notice: "コメントを削除しました"
-      else
-        redirect_to inquiry_path(@inquiry), alert: "コメントを削除できませんでした"
-      end
+    unless @inquiry.status.in?(can_comment)
+      redirect_to inquiry_path(@inquiry), alert: "コメントを削除できませんでした"
+      return
+    end
+
+    if comment.destroy
+      redirect_to inquiry_path(@inquiry), notice: "コメントを削除しました"
     else
       redirect_to inquiry_path(@inquiry), alert: "コメントを削除できませんでした"
     end

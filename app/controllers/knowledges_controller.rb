@@ -4,9 +4,12 @@ class KnowledgesController < ApplicationController
   def index
     @categories = Category.order(:name)
     @inquiries = Inquiry.approved_knowledge
+                        .page(params[:page]).reverse_order
+
     @inquiries = @inquiries.search_keyword(params[:q])
                            .by_category(params[:category_id])
-                           .order(created_at: :desc)
+                           .page(params[:page]).reverse_order
+                           #.order(created_at: :desc)
   end
 
   def show

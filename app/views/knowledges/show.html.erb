@@ -1,4 +1,4 @@
-<main class="inquiries-page">
+<main class="inquiries-page knowledge-page">
   <nav class="page-nav">
     <%= link_to "承認済ナレッジ一覧へ戻る", knowledges_path %>
   </nav>
@@ -34,18 +34,26 @@
     </div>
 
     <section class="comments ms-5 mt-5">
+    <h5>関連するやりとり・補足情報</h5>
     <p>コメント件数：<%= @comments.count %> 件</p>
       <% @comments.each do |comment| %>
-        <%= comment.user.role %>
-        <time datetime="<%= comment.created_at.iso8601 %>">
-          <%= l comment.created_at, format: :long %>
-        </time>
-        <%= comment.body %>
-        <% if current_user.admin? %>
-          <div class="comment-delete">
-             <%= button_to "削除", inquiry_comment_path(@inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+        <div class="comment-item">
+          <div class="comment-meta">
+            <%= comment.user.role %>
+            <time datetime="<%= comment.created_at.iso8601 %>">
+              <%= l comment.created_at, format: :long %>
+            </time>
           </div>
-        <% end %>
+
+          <div class="comment-body">
+            <%= simple_format(comment.body) %>
+            <% if current_user.admin? %>
+              <div class="comment-delete">
+                <%= button_to "削除", inquiry_comment_path(@inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+              </div>
+            <% end %>
+          </div>
+        </div>
       <% end %>
     </section> 
         

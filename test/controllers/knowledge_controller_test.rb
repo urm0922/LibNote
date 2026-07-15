@@ -1,6 +1,6 @@
 require "test_helper"
 
-class KnowledgesControllerTest < ActionDispatch::IntegrationTest
+class KnowledgeControllerTest < ActionDispatch::IntegrationTest
   fixtures :users, :inquiries, :categories, :comments
 
   test "staff can view only approved knowledge" do

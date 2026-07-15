@@ -45,18 +45,19 @@ class InquiriesController < ApplicationController
       @inquiries = Inquiry.where.not(status: :draft)
                           .or(Inquiry.where(status: :draft, user: current_user))
                           .includes(:user, :category)
-                          .order(created_at: :desc)
+                          .page(params[:page]).reverse_order
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])
-                             .order(created_at: :desc)
+                             .page(params[:page]).reverse_order
     else
-      @inquiries = current_user.inquiries.includes(:user, :category).order(created_at: :desc)
+      @inquiries = current_user.inquiries.includes(:user, :category).page(params[:page]).reverse_order#order(created_at: :desc)
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])
-                             .order(created_at: :desc)
+                             .page(params[:page]).reverse_order
     end
+
   end
 
   def new
@@ -80,7 +81,8 @@ class InquiriesController < ApplicationController
   end
 
   def confirm
-    @inquiries = current_user.inquiries.draft
+    @inquiries = current_user.inquiries.draft.page(params[:page]).reverse_order
+
   end
 
   def show

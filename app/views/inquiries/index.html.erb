@@ -16,7 +16,7 @@
         <%= f.submit "検索する", name: nil %>
         <%= link_to "条件クリア", inquiries_path, class: "btn btn-success"%>
       <% end %>
-    </div>
+  </div>
 
   <% if notice.present? %>
     <p class="flash flash-notice"><%= notice %></p>
@@ -47,6 +47,7 @@
         </article>
       <% end %>
     </div>
+    <%= paginate @inquiries %>
   <% else %>
     <section class="empty-state">
       <h2>記事はまだありません</h2>
