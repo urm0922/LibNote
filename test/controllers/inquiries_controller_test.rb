@@ -227,5 +227,4 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
       }
     end
   end
-
 end

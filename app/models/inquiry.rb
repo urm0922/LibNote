@@ -26,19 +26,4 @@ class Inquiry < ApplicationRecord
   scope :approved_knowledge, -> {
     approved.includes(:category, :user).order(updated_at: :desc)
   }
-  def publish_as_knowledge!
-    transaction do
-      update!(status: :approved)
-
-      craete_knowledge_article!(
-        category: category,
-        author: user,
-        title: title,
-        body: body,
-        status: :published,
-        published_at: Time.current
-
-      )
-    end
-  end
 end

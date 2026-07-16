@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_14_082714) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_16_085652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,6 +29,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_14_082714) do
     t.datetime "updated_at", null: false
     t.index ["inquiry_id"], name: "index_comments_on_inquiry_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "faq_entries", force: :cascade do |t|
+    t.bigint "knowledge_article_id", null: false
+    t.text "question", null: false
+    t.text "answer", null: false
+    t.integer "status", default: 0, null: false
+    t.boolean "generated_by_ai", default: false, null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["knowledge_article_id"], name: "index_faq_entries_on_knowledge_article_id"
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -52,6 +64,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_14_082714) do
     t.datetime "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "generated_by_ai", default: false, null: false
     t.index ["author_id"], name: "index_knowledge_articles_on_author_id"
     t.index ["category_id"], name: "index_knowledge_articles_on_category_id"
     t.index ["inquiry_id"], name: "index_knowledge_articles_on_inquiry_id"
@@ -75,6 +88,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_14_082714) do
 
   add_foreign_key "comments", "inquiries"
   add_foreign_key "comments", "users"
+  add_foreign_key "faq_entries", "knowledge_articles"
   add_foreign_key "inquiries", "categories"
   add_foreign_key "inquiries", "users"
   add_foreign_key "knowledge_articles", "categories"

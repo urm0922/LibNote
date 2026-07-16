@@ -19,11 +19,15 @@ class InquiriesController < ApplicationController
 
   def approve
     if current_user.admin?
-      @inquiry.publish_as_knowledge!
+      Inquiries::ApproveAndGenerateDrafts.new(
+        inquiry: @inquiry,
+        approver: current_user
+      ).call
+
       redirect_to inquiry_path(@inquiry), notice: "承認しました"
     else
-      redirect_to inquiry_path(@inquiry), notice: "権限がありません"
-    end  
+      redirect_to inquiry_path(@inquiry), alert: "権限がありません"
+    end
   end
 
   def reject
