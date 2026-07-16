@@ -1,0 +1,42 @@
+<%= form_with model: knowledge_article, class: "inquiry-form" do |form| %>
+  <% if knowledge_article.errors.any? %>
+    <section class="error-summary">
+      <h2><%= knowledge_article.errors.count %>件のエラーがあります</h2>
+      <ul>
+        <% knowledge_article.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title, "タイトル" %>
+    <%= form.text_field :title, required: true, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :category_id, "カテゴリ" %>
+    <%= form.collection_select :category_id, categories, :id, :name, { prompt: "選択してください" }, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body, "本文" %>
+    <%= form.text_area :body, rows: 10, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :status, "ステータス" %>
+    <%= form.select :status, KnowledgeArticle.statuses.keys.map { |status| [status, status] } %>
+  </div>
+
+  <div class="field">
+    <%= form.label :published_at, "公開日時" %>
+    <%= form.datetime_field :published_at %>
+  </div>
+
+  <div class="button-row">
+    <%= form.submit "更新する", class: "button button-primary" %>
+    <%= link_to "キャンセル", knowledge_article_path(knowledge_article), class: "button button-secondary" %>
+  </div>
+<% end %>

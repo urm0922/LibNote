@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     resources :comments, only:[:create, :destroy]
   end
 
-  resources :knowledges, only:[:index, :show]
+  resources :knowledge_articles, except:[:new, :create]
 
   
   root :to => "homes#top"

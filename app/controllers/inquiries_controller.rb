@@ -19,11 +19,11 @@ class InquiriesController < ApplicationController
 
   def approve
     if current_user.admin?
-      @inquiry.update(status: :approved)
+      @inquiry.publish_as_knowledge!
       redirect_to inquiry_path(@inquiry), notice: "承認しました"
     else
-      redirect_to inquiry_path(@inquiry), alert: "権限がありません"
-    end
+      redirect_to inquiry_path(@inquiry), notice: "権限がありません"
+    end  
   end
 
   def reject
@@ -126,9 +126,9 @@ class InquiriesController < ApplicationController
     end
 
     if @inquiry.update(inquiry_params)
-    redirect_to inquiry_path(@inquiry), notice: "問い合わせを更新しました"
+      redirect_to inquiry_path(@inquiry), notice: "問い合わせを更新しました"
     else
-    render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 

@@ -1,7 +1,7 @@
 require "test_helper"
 
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :inquiries, :categories, :comments
+  fixtures :users, :inquiries, :categories, :comments, :knowledge_articles
   
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)

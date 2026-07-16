@@ -1,0 +1,14 @@
+<main class="inquiries-page knowledge-page">
+  <nav class="page-nav">
+    <%= link_to "詳細へ戻る", knowledge_article_path(@knowledge_article) %>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <h1>ナレッジ編集</h1>
+      <p>公開済みナレッジの内容を更新します。</p>
+    </div>
+  </header>
+
+  <%= render "form", knowledge_article: @knowledge_article, categories: @categories %>
+</main>

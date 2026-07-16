@@ -69,3 +69,10 @@ other_staff_open:
   user: other_staff
   category: general
   status: open
+
+other_staff_approved:
+  title: "他人の問い合わせ(approved)"
+  body: "他人の問い合わせ(approved)について"
+  user: other_staff
+  category: general
+  status: approved

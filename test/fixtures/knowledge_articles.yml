@@ -1,0 +1,17 @@
+staff_draft: 
+  inquiry: staff_approved
+  category: general
+  author: staff
+  title: "staff approved"
+  body: "staff approvedについて"
+  status: draft 
+
+other_staff_published:
+  inquiry: other_staff_approved
+  category: general
+  author: other_staff
+  title: "other staff published"
+  body: "other staff publishedについて"
+  status: published
+  published_at: 2026-07-15 00:00:00
+  

@@ -1,7 +1,7 @@
 require "test_helper"
 
 class CommentsControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :inquiries, :categories, :comments
+  fixtures :users, :inquiries, :categories, :comments, :knowledge_articles
 
   test "staff cannot destroy comments in approved inquiry" do
     sign_in users(:staff)
