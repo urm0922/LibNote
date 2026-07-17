@@ -83,11 +83,22 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
   test "admin can approve any inquiry" do
     sign_in users(:admin)
     inquiry = inquiries(:staff_answered)
-
-    patch approve_inquiry_path(inquiry)
+    
+    assert_difference "KnowledgeArticle.count", 1 do
+      assert_difference "FaqEntry.count", 1 do
+        patch approve_inquiry_path(inquiry)
+      end
+    end
 
     assert_redirected_to inquiry_path(inquiry)
     assert_equal "approved", inquiry.reload.status
+
+    knowledge_article = inquiry.knowledge_article.reload
+    assert_equal "draft", knowledge_article.status
+
+    faq_entries = knowledge_article.faq_entries.reload
+    assert_equal 1, faq_entries.count
+    assert_equal "draft", faq_entries.first.status         
   end
 
   test "staff cannot see another user's inquiy in search results" do
