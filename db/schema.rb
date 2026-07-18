@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_16_085652) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_17_072512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_16_085652) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approver_id"
+    t.datetime "approved_at"
+    t.index ["approver_id"], name: "index_inquiries_on_approver_id"
   end
 
   create_table "knowledge_articles", force: :cascade do |t|
@@ -91,6 +94,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_16_085652) do
   add_foreign_key "faq_entries", "knowledge_articles"
   add_foreign_key "inquiries", "categories"
   add_foreign_key "inquiries", "users"
+  add_foreign_key "inquiries", "users", column: "approver_id"
   add_foreign_key "knowledge_articles", "categories"
   add_foreign_key "knowledge_articles", "inquiries"
   add_foreign_key "knowledge_articles", "users", column: "author_id"

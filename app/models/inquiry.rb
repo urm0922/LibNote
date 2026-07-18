@@ -1,11 +1,15 @@
 class Inquiry < ApplicationRecord
   belongs_to :user
   belongs_to :category
+  belongs_to :approver,
+              class_name: "User",
+              optional: true
   has_many :comments, dependent: :destroy
   has_one :knowledge_article, dependent: :restrict_with_error
   validates :title, presence: true
   validates :body, presence: true
   validates :status, presence: true
+  validates :approved_at, presence: true, if: :approved?
   enum status: { draft: 0, open: 1, answered: 2, approved: 3, rejected: 4 }
 
   scope :search_keyword, ->(keyword) {

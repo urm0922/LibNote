@@ -6,7 +6,9 @@ class Inquiries::ApproveAndGenerateDrafts
   
     def call
       ActiveRecord::Base.transaction do
-        inquiry.update!(status: :approved)
+        inquiry.update!(status: :approved,
+                        approver: approver,
+                        approved_at: Time.current)
 
         knowledge_article = inquiry.create_knowledge_article!(
           category: inquiry.category,
