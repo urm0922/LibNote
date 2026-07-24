@@ -1,7 +1,13 @@
 require "test_helper"
+require "minitest/mock"
 
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
   fixtures :users, :inquiries, :categories, :comments, :knowledge_articles
+  FakeGenerator = Struct.new(:result) do
+    def call(inquiry:)
+      result
+    end
+  end
   
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)
@@ -84,9 +90,23 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:admin)
     inquiry = inquiries(:staff_answered)
     
-    assert_difference "KnowledgeArticle.count", 1 do
-      assert_difference "FaqEntry.count", 1 do
-        patch approve_inquiry_path(inquiry)
+    generated_result = Ai::DraftGenerator::Result.new(
+      article_title: "生成された記事タイトル",
+      article_body: "生成された記事本文",
+      faq_question: "生成された質問",
+      faq_answer: "生成された回答"
+    )
+
+    fake_generator = FakeGenerator.new(generated_result)
+
+    Ai::DraftGenerator.stub(
+      :new,
+      ->(*args, **kwargs) { fake_generator }
+    ) do
+      assert_difference "KnowledgeArticle.count", 1 do
+        assert_difference "FaqEntry.count", 1 do
+          patch approve_inquiry_path(inquiry)
+        end
       end
     end
 
@@ -95,10 +115,14 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
 
     knowledge_article = inquiry.knowledge_article.reload
     assert_equal "draft", knowledge_article.status
-
+    assert_equal "生成された記事タイトル", knowledge_article.title
+    assert_equal "生成された記事本文", knowledge_article.body
+    
     faq_entries = knowledge_article.faq_entries.reload
     assert_equal 1, faq_entries.count
-    assert_equal "draft", faq_entries.first.status         
+    assert_equal "draft", faq_entries.first.status
+    assert_equal "生成された質問", faq_entries.first.question
+    assert_equal "生成された回答", faq_entries.first.answer         
   end
 
   test "staff cannot see another user's inquiy in search results" do
