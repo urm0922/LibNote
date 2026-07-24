@@ -1,14 +1,23 @@
 class Inquiries::ApproveAndGenerateDrafts
-    def initialize(inquiry:, approver:, generator: Ai::DraftGenerator.new)
-      @inquiry = inquiry
-      @approver = approver
-      @generator = generator
-    end
+  class GenerationError < StandardError; end
+  class AlreadyApprovedError < StandardError; end
+
+  def initialize(inquiry:, approver:, generator: Ai::DraftGenerator.new)
+    @inquiry = inquiry
+    @approver = approver
+    @generator = generator
+  end
+    
+  
   
     def call
       generated = generator.call(inquiry: inquiry)
 
       ActiveRecord::Base.transaction do
+        inquiry.lock!
+
+        raise AlreadyApprovedError if inquiry.approved?
+        
         inquiry.update!(status: :approved,
                         approver: approver,
                         approved_at: Time.current)
@@ -28,8 +37,16 @@ class Inquiries::ApproveAndGenerateDrafts
           status: :draft,
           generated_by_ai: true
         )
-      end 
-    end
+      end
+
+      rescue OpenAI::Errors::Error, JSON::ParserError => error
+        Rails.logger.error(
+          "AI draft generation failed: inquiry_id=#{inquiry.id} " \
+          "error=#{error.class}"
+        )
+    
+        raise GenerationError, "AI draft generation failed" 
+      end
 
 
   

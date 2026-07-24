@@ -28,6 +28,13 @@ class InquiriesController < ApplicationController
     else
       redirect_to inquiry_path(@inquiry), alert: "権限がありません"
     end
+
+    rescue Inquiries::ApproveAndGenerateDrafts::GenerationError
+      redirect_to inquiry_path(@inquiry), alert: "AIによる下書き生成に失敗しました。時間をおいて再度お試しください"
+    
+    rescue Inquiries::ApproveAndGenerateDrafts::AlreadyApprovedError
+      redirect_to inquiry_path(@inquiry), alert: "この問い合わせはすでに承認されています"
+      
   end
 
   def reject

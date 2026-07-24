@@ -8,6 +8,13 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
       result
     end
   end
+
+  class FailingGenerator
+    def call(inquiry:)
+      raise JSON::ParserError, "invalid JSON"
+    end
+  end
+
   
   test "staff cannot view another user's inquiry" do
     sign_in users(:staff)
@@ -260,6 +267,61 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
           status: "approved"
         }
       }
+    end
+  end
+
+  test "approval won't be performed when generation error occurs" do
+    sign_in users(:admin)
+    inquiry = inquiries(:staff_answered)
+    failing_generator = FailingGenerator.new
+
+    Ai::DraftGenerator.stub(
+      :new,
+      ->(*args, **kwargs) { failing_generator }
+    ) do
+      assert_no_difference ["KnowledgeArticle.count", "FaqEntry.count"] do
+        patch approve_inquiry_path(inquiry)
+      end
+    end
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_equal "answered", inquiry.reload.status
+    assert_equal(
+      "AIによる下書き生成に失敗しました。時間をおいて再度お試しください",
+      flash[:alert]
+    )
+  end
+
+  test "already approved inquiry is not approved again" do
+    sign_in users(:admin)
+    inquiry = inquiries(:staff_approved)
+
+    generated_result = Ai::DraftGenerator::Result.new(
+      article_title: "生成された記事タイトル",
+      article_body: "生成された記事本文",
+      faq_question: "生成された質問",
+      faq_answer: "生成された回答"
+    )
+
+    fake_generator = FakeGenerator.new(generated_result)
+
+    Ai::DraftGenerator.stub(
+      :new,
+      ->(*args, **kwargs) { fake_generator }
+    ) do
+  
+      assert_no_difference ["KnowledgeArticle.count", "FaqEntry.count"] do
+        patch approve_inquiry_path(inquiry)
+      end
+    
+      assert_redirected_to inquiry_path(inquiry)
+      assert_equal(
+        "この問い合わせはすでに承認されています",
+        flash[:alert]
+      )
+      assert_equal "approved", inquiry.reload.status
+
+      
     end
   end
 end
