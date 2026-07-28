@@ -5,9 +5,26 @@ draft:
   status: draft
   generated_by_ai: false
 
-other_draft:
+other_draft_faq:
   knowledge_article: other_staff_draft
-  question: "other staff approved?"
-  answer: "other staff approvedについて"
+  question: "other staff draft?"
+  answer: "other staff draftについて"
   status: draft
-  generated_by_ai: false
+  generated_by_ai: true
+
+
+staff_published_faq:
+  knowledge_article: staff_published
+  question: "staff_published?"
+  answer: "staff_publishedについて"
+  status: published
+  generated_by_ai: true
+  published_at: 2026-07-15 00:00:00
+
+other_published_false_faq:
+  knowledge_article: other_staff_published
+  question: "other_staff_published?"
+  answer: "other_staff_publishedについて"
+  status: published
+  generated_by_ai: true
+  published_at: 2026-07-15 00:00:00

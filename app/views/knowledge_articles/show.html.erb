@@ -42,15 +42,17 @@
       <%= simple_format(@knowledge_article.body) %>
     </div>
     
-    <% if current_user.admin? || @knowledge_article.faq_enabled == true %>
-      <section class="question ms-5 mt-5">
-        <h5>Q1</h5>
-          <%= simple_format(@knowledge_article.faq_entries.first.question) %>
-      </section>  
+    <% if (@knowledge_article.faq_entries.first.present?) && (current_user.admin? || @knowledge_article.faq_enabled == true) %>
+      <section id="faq-<%= @knowledge_article.faq_entries.first.id %>" class="FAQ">
+        <div class="question ms-5 mt-5">
+          <h5>Q1</h5>
+            <%= simple_format(@knowledge_article.faq_entries.first.question) %>
+        </div>  
 
-      <section class="answer ms-5 mt-5">
-        <h5>A1</h5>
-          <%= simple_format(@knowledge_article.faq_entries.first.answer) %>
+        <div class="answer ms-5 mt-5">
+          <h5>A1</h5>
+            <%= simple_format(@knowledge_article.faq_entries.first.answer) %>
+        </div>
       </section>
     <% end %>
     

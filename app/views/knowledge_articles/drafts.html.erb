@@ -12,7 +12,7 @@
         <%= f.label :category_id, "カテゴリ" %>
         <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
         <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", knowledge_articles_path, class: "btn btn-success"%>
+        <%= link_to "条件クリア", drafts_knowledge_articles_path, class: "btn btn-success"%>
       <% end %>
     </div>
 

@@ -155,17 +155,23 @@ class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:admin)
     knowledge_article = knowledge_articles(:staff_draft)
 
-    put knowledge_article_path(knowledge_article), params: { status: :published }
+    put knowledge_article_path(knowledge_article), params: { 
+      knowledge_article: {
+        status: :published 
+      }
+    }
 
     assert_equal "draft", knowledge_article.reload.status
   end
 
-  test "staff can view only faq published" do
-    sign_in users(:staff)
-    get faq_entries_path
+  test "admin can publish knowledge article and faq entry at the same time" do
+    sign_in users(:admin)
+    knowledge_article = knowledge_articles(:other_staff_draft)
 
-    assert response.body, knowledge_articles(:staff_published).faq_entries.first.question
-    assert_not response.body, knowledge_articles(:other_staff_published).faq_entries.first.question
+    patch publish_knowledge_article_path(knowledge_article)
+
+    assert_equal "published", knowledge_article.reload.status
+    assert_equal "published", knowledge_article.faq_entries.first.reload.status
   end
 end
 

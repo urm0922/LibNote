@@ -42,6 +42,8 @@ class KnowledgeArticlesController < ApplicationController
   def drafts
     @knowledge_articles = KnowledgeArticle.draft
                                           .includes(:category, :author)
+                                          .search_keyword(params[:q])
+                                          .by_category(params[:category_id])
                                           .page(params[:page]).reverse_order
   end
 
