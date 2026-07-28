@@ -4,9 +4,8 @@ class KnowledgeArticle < ApplicationRecord
   belongs_to :author, class_name: "User"
   has_many :faq_entries, dependent: :destroy
   enum status: { draft: 0, published: 1, archived: 2 }
+  accepts_nested_attributes_for :faq_entries
   
-  scope :published, -> { where(status: :published)}
-
   scope :search_keyword, ->(keyword) {
     if keyword.present?
       escaped_keyword = sanitize_sql_like(keyword)

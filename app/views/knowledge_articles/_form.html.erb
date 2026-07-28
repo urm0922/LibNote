@@ -26,13 +26,22 @@
   </div>
 
   <div class="field">
-    <%= form.label :status, "ステータス" %>
-    <%= form.select :status, KnowledgeArticle.statuses.keys.map { |status| [status, status] } %>
+  <%= form.check_box :faq_enabled %>
+  <%= form.label :faq_enabled, "FAQとしても公開する" %>
   </div>
 
   <div class="field">
-    <%= form.label :published_at, "公開日時" %>
-    <%= form.datetime_field :published_at %>
+    <%= form.fields_for :faq_entries do |faq_form| %>
+      <%= faq_form.label :question, "質問" %>
+      <%= faq_form.text_area :question, rows: 5, required: true %>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= form.fields_for :faq_entries do |faq_form| %>
+      <%= faq_form.label :answer, "回答" %>
+      <%= faq_form.text_area :answer, rows: 5, required: true %>
+    <% end %>
   </div>
 
   <div class="button-row">

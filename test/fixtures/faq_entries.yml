@@ -4,3 +4,10 @@ draft:
   answer: "staff approvedについて"
   status: draft
   generated_by_ai: false
+
+other_draft:
+  knowledge_article: other_staff_draft
+  question: "other staff approved?"
+  answer: "other staff approvedについて"
+  status: draft
+  generated_by_ai: false

@@ -1,9 +1,9 @@
 class KnowledgeArticlesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_categories, only: [:index, :edit, :update]
+  before_action :set_categories, only: [:index, :edit, :update, :drafts]
   before_action :set_visible_knowledge_article, only: :show
-  before_action :require_admin!, only: [:edit, :update, :destroy]
-  before_action :set_knowledge_article, only: [:edit, :update, :destroy]
+  before_action :require_admin!, only: [:edit, :update, :destroy, :drafts, :publish, :draft]
+  before_action :set_knowledge_article, only: [:edit, :update, :destroy, :publish, :draft]
 
   def index
     @knowledge_articles = KnowledgeArticle.published
@@ -18,11 +18,11 @@ class KnowledgeArticlesController < ApplicationController
   end
 
   def edit
+    @knowledge_article.faq_entries.build if @knowledge_article.faq_entries.empty?
   end
 
   def update
     @knowledge_article.assign_attributes(knowledge_article_params)
-    @knowledge_article.published_at ||= Time.current if @knowledge_article.published?
 
     if @knowledge_article.save
       redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを更新しました"
@@ -36,6 +36,63 @@ class KnowledgeArticlesController < ApplicationController
       redirect_to knowledge_articles_path, notice: "ナレッジを削除しました"
     else
       redirect_to knowledge_article_path(@knowledge_article), alert: "ナレッジの削除に失敗しました"
+    end
+  end
+
+  def drafts
+    @knowledge_articles = KnowledgeArticle.draft
+                                          .includes(:category, :author)
+                                          .page(params[:page]).reverse_order
+  end
+
+  def publish
+    if @knowledge_article.draft?
+
+      ActiveRecord::Base.transaction do
+        @knowledge_article.update!(
+          status: :published,
+          published_at: Time.current
+        )
+    
+        if @knowledge_article.faq_enabled?
+          @knowledge_article.faq_entries.each do |faq_entry|
+            faq_entry.update!(
+              status: :published,
+              published_at: Time.current
+            )
+          end
+        end
+      end
+      redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを公開しました"
+    elsif @knowledge_article.archived?
+      redirect_to knowledge_article_path(@knowledge_article), alert: "このナレッジは公開できない状態です"
+    else
+      redirect_to knowledge_article_path(@knowledge_article), alert: "既に公開済みのナレッジです"
+    end
+  end
+  
+  def draft
+    if @knowledge_article.published?
+
+      ActiveRecord::Base.transaction do
+        @knowledge_article.update!(
+          status: :draft
+        )
+    
+        if @knowledge_article.faq_enabled?
+          @knowledge_article.faq_entries.each do |faq_entry|
+            faq_entry.update!(
+              status: :draft
+            )
+          end
+        end
+      end
+
+      redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを下書きに戻しました"
+    elsif @knowledge_article.archived?
+      redirect_to knowledge_article_path(@knowledge_article), alert: "このナレッジは下書きに戻せない状態です"
+    else
+      redirect_to knowledge_article_path(@knowledge_article), alert: "既に下書きのナレッジです"
     end
   end
 
@@ -65,6 +122,16 @@ class KnowledgeArticlesController < ApplicationController
   end
 
   def knowledge_article_params
-    params.require(:knowledge_article).permit(:title, :body, :category_id, :status, :published_at)
+    params.require(:knowledge_article).permit(
+      :title,
+      :body,
+      :category_id,
+      :faq_enabled,
+      faq_entries_attributes: [
+        :id,
+        :question,
+        :answer
+      ]
+    )
   end
 end

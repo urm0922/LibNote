@@ -1,6 +1,11 @@
 <main class="inquiries-page knowledge-page">
   <nav class="page-nav">
-    <%= link_to "承認済ナレッジ一覧へ戻る", knowledge_articles_path %>
+    <% if @knowledge_article.published? %>
+      <%= link_to "承認済ナレッジ一覧へ戻る", knowledge_articles_path %>
+    <% else %>
+      <%= link_to "下書きナレッジ一覧へ戻る", drafts_knowledge_articles_path %>
+    <% end %>
+
   </nav>
 
   <% if notice.present? %>
@@ -16,7 +21,11 @@
         <div class="inquiry-card-meta">
           <span><%= @knowledge_article.category.name %></span>
           <time datetime="<%= @knowledge_article.published_at&.iso8601 %>">
-            <%= l @knowledge_article.published_at, format: :long %>
+            <% if @knowledge_article.published_at? %>
+              <%= l @knowledge_article.published_at, format: :long %>
+            <% else %>
+              <span>下書き</span>
+            <% end %>
           </time>
         </div>
         <h1><%= @knowledge_article.title %></h1>
@@ -32,8 +41,21 @@
     <div class="inquiry-body">
       <%= simple_format(@knowledge_article.body) %>
     </div>
+    
+    <% if current_user.admin? || @knowledge_article.faq_enabled == true %>
+      <section class="question ms-5 mt-5">
+        <h5>Q1</h5>
+          <%= simple_format(@knowledge_article.faq_entries.first.question) %>
+      </section>  
 
-    <section class="comments ms-5 mt-5">
+      <section class="answer ms-5 mt-5">
+        <h5>A1</h5>
+          <%= simple_format(@knowledge_article.faq_entries.first.answer) %>
+      </section>
+    <% end %>
+    
+
+    <section class="comments ms-5 mt-5 mb-5">
     <h5>関連するやりとり・補足情報</h5>
     <p>コメント件数：<%= @comments.count %> 件</p>
       <% @comments.each do |comment| %>
@@ -65,5 +87,12 @@
         <%#/div>
       <%#/section>
     <%# end %>
+
+    <% if current_user.admin? && @knowledge_article.draft? %>
+      <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "btn btn-success" %>
+    <% end %>
+    <% if current_user.admin? && @knowledge_article.published? %>
+      <%= button_to "ナレッジを下書きに戻す",  draft_knowledge_article_path(@knowledge_article), method: :patch, class: "btn btn-primary" %>
+    <% end %>
   </article>
 </main>

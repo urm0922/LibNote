@@ -11,6 +11,8 @@ class Inquiries::ApproveAndGenerateDrafts
   
   
     def call
+      raise AlreadyApprovedError if inquiry.reload.approved?
+      
       generated = generator.call(inquiry: inquiry)
 
       ActiveRecord::Base.transaction do
@@ -46,7 +48,8 @@ class Inquiries::ApproveAndGenerateDrafts
         )
     
         raise GenerationError, "AI draft generation failed" 
-      end
+     end
+    
 
 
   

@@ -4,6 +4,13 @@ class FaqEntry < ApplicationRecord
 
   enum status: { draft: 0, published: 1,archived: 2}
 
+  scope :search_keyword, ->(keyword) {
+    if keyword.present?
+      escaped_keyword = sanitize_sql_like(keyword)
+      where("faq_entries.question LIKE :keyword OR faq_entries.answer LIKE :keyword", keyword: "%#{escaped_keyword}%")
+    end
+  }
+
   validates :question, presence: true
   validates :answer, presence: true
   validates :status, presence: true

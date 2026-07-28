@@ -21,9 +21,20 @@ Rails.application.routes.draw do
     resources :comments, only:[:create, :destroy]
   end
 
-  resources :knowledge_articles, except:[:new, :create]
+  resources :knowledge_articles, except:[:new, :create] do
+    collection do
+      get :drafts
+    end
 
-  
+    member do
+      patch :publish
+      patch :draft
+    end
+  end
+    
+
+  resources :faq_entries, only:[:index]
+
   root :to => "homes#top"
 
 end

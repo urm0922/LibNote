@@ -1,10 +1,20 @@
+staff_published:
+  inquiry: staff_special_approved
+  category: general
+  author: staff
+  title: "staff special approved"
+  body: "staff special approvedについて"
+  status: published
+  faq_enabled: true
+  published_at: 2026-07-15 00:00:00
+
 staff_draft: 
   inquiry: staff_approved
   category: general
   author: staff
   title: "staff approved"
   body: "staff approvedについて"
-  status: draft 
+  status: draft
 
 other_staff_published:
   inquiry: other_staff_approved
@@ -14,4 +24,12 @@ other_staff_published:
   body: "other staff publishedについて"
   status: published
   published_at: 2026-07-15 00:00:00
-  
+
+other_staff_draft: 
+  inquiry: other_staff_special_approved
+  category: general
+  author: other_staff
+  title: "other staff special approved"
+  body: "other staff special approvedについて"
+  status: draft
+  faq_enabled: true

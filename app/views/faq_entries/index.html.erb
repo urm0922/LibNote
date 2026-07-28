@@ -1,0 +1,49 @@
+<main class="inquiries-page">
+  <header class="page-header">
+    <div>
+      <h1>FAQ一覧</h1>
+      <p><%= @faq_entries.size %>件の承認済FAQ</p>
+    </div>
+    <%= link_to "問い合わせ新規作成", new_inquiry_path, class: "btn btn-primary" %>
+  </header>
+  <div class="search-form row mt-3 ms-3 align-self-end">
+      <%= form_with url:faq_entries_path, method: :get, local: true do |f| %>
+        <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.submit "検索する", name: nil %>
+        <%= link_to "条件クリア", faq_entries_path, class: "btn btn-success"%>
+      <% end %>
+    </div>
+
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
+
+  <% if @faq_entries.any? %>
+    <div class="inquiry-list">
+      <% @faq_entries.each do |faq_entry| %>
+        <article class="inquiry-card">
+          <div class="inquiry-card-main">
+            <div class="inquiry-card-meta">
+              <time datetime="<%= faq_entry.published_at&.iso8601 %>">
+                <%= l faq_entry.published_at, format: :long %>
+              </time>
+            </div>
+            <h2><%= link_to faq_entry.question, knowledge_article_path(faq_entry.knowledge_article, anchor: "faq-#{faq_entry.id}" ) %></h2>
+            <p><%= truncate(faq_entry.answer, length: 120) %></p>
+          </div>
+          <%= link_to "詳細", knowledge_article_path(faq_entry.knowledge_article, anchor: "faq-#{faq_entry.id}" ), class: "button button-secondary" %>
+        </article>
+      <% end %>
+    </div>
+    <%= paginate @faq_entries %>
+  <% else %>
+    <section class="empty-state">
+      <h2>承認済FAQはまだありません</h2>
+      <p>問い合わせを作成できます。</p>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
+    </section>
+  <% end %>
+</main>
