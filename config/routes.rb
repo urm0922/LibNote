@@ -35,6 +35,10 @@ Rails.application.routes.draw do
 
   resources :faq_entries, only:[:index]
 
+  namespace :admin do
+    resources :categories, except: :show
+  end
+
   root :to => "homes#top"
 
 end

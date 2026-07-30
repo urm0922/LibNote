@@ -1,0 +1,14 @@
+<main class="inquiries-page">
+  <nav class="page-nav">
+    <%= link_to "一覧へ戻る", admin_categories_path %>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <h1>カテゴリ編集</h1>
+      <p>カテゴリ名を編集します。</p>
+    </div>
+  </header>
+
+  <%= render "form", category: @category %>
+</main>

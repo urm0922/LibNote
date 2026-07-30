@@ -1,0 +1,22 @@
+<%= form_with model: [:admin, category], class: "inquiry-form" do |form| %>
+  <% if category.errors.any? %>
+    <section class="error-summary">
+      <h2><%= category.errors.count %>件のエラーがあります</h2>
+      <ul>
+        <% category.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "カテゴリ名" %>
+    <%= form.text_field :name, required: true, autofocus: true %>
+  </div>
+
+  <div class="button-row">
+    <%= form.submit category.persisted? ? "更新する" : "作成する", class: "button button-primary" %>
+    <%= link_to "キャンセル", admin_categories_path, class: "button button-secondary" %>
+  </div>
+<% end %>

@@ -1,0 +1,67 @@
+<main class="categories-page">
+  <header class="page-header">
+    <div>
+      <h1>カテゴリ一覧</h1>
+      <p><%= @categories.total_count %>件のカテゴリ</p>
+    </div>
+    <%= link_to "新規作成", new_admin_category_path, class: "btn btn-primary" %>
+  </header>
+
+  <div class="search-form row mt-3 ms-3 align-self-end">
+      <%= form_with url:admin_categories_path, method: :get, local: true do |f| %>
+        <%= f.hidden_field :sort, value: params[:sort] if params[:sort].present? %>
+        <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.submit "検索する", name: nil %>
+        <%= link_to "条件クリア", admin_categories_path, class: "btn btn-success"%>
+      <% end %>
+  </div>
+
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
+
+  <% if @categories.any? %>
+  <%= link_to '古い順', admin_categories_path(q: params[:q], sort: "old") %>
+  |<%= link_to '新しい順', admin_categories_path(q: params[:q], sort: "latest") %>
+  |<%= link_to 'カテゴリ名:降順', admin_categories_path(q: params[:q], sort: "name_desc") %>
+  |<%= link_to 'カテゴリ名:昇順', admin_categories_path(q: params[:q], sort: "name_asc") %>
+
+
+    <div class="category-list">
+      <% @categories.each do |category| %>
+        <article class="category-card">
+          <div class="category-card-main">
+            <div class="category-card-meta">
+              <span class="status-badge <%= category_status_class(category) %>">
+                <%= category_label(category) %>
+              </span>
+              <time datetime="<%= category.created_at.iso8601 %>">
+                <%= l category.created_at, format: :long %>
+              </time>
+            </div>
+            <h2><%= category.name %></h2>
+            <div class="usage-count">
+                <p>問い合わせ件数：<%= @inquiry_counts[category.id] || 0 %> 件</p>
+                <p>ナレッジ件数：<%= @knowledge_article_counts[category.id] || 0 %> 件 </p>
+            </div>
+            <%= link_to "編集", edit_admin_category_path(category), class: "btn btn-success mt-2" %>
+            <% unless category_status(category) == "used" %>
+              <%= button_to "削除", admin_category_path(category), method: :delete, class: "btn btn-danger mt-2", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+            <% end %>
+          </div>
+          
+        </article>
+      <% end %>
+    </div>
+    <%= paginate @categories %>
+  <% else %>
+    <section class="empty-state">
+      <h2>カテゴリはまだありません</h2>
+      <p>最初のカテゴリを作成できます。</p>
+      <%= link_to "カテゴリを作成", new_admin_category_path, class: "button button-primary" %>
+    </section>
+  <% end %>
+</main>

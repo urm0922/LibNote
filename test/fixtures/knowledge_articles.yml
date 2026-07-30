@@ -27,7 +27,7 @@ other_staff_published:
 
 other_staff_draft: 
   inquiry: other_staff_special_approved
-  category: general
+  category: used_by_knowledge
   author: other_staff
   title: "other staff special approved"
   body: "other staff special approvedについて"
