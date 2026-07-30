@@ -37,6 +37,12 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :categories, except: :show
+    resources :users, only:[:index, :edit, :update] do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
   end
 
   root :to => "homes#top"

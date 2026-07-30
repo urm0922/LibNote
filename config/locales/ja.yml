@@ -7,6 +7,12 @@ ja:
         answered: "回答済み"
         approved: "承認済み"
         rejected: "差し戻し"
+    
+    user:
+      role:
+        admin: "管理者"
+        manager: "マネージャー"
+        staff: "スタッフ"
   
   inquiries:
     form:

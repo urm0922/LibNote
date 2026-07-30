@@ -4,6 +4,17 @@ class User < ApplicationRecord
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :deleted, -> {where.not(deleted_at: nil) }
 
+  scope :search_keyword, ->(keyword) {
+    if keyword.present?
+      escaped_keyword = sanitize_sql_like(keyword)
+      where("name LIKE :keyword", keyword: "%#{escaped_keyword}%")
+    end
+  }
+
+  scope :by_role, ->(role) {
+    where(role: roles[role]) if role.present? && roles.key?(role)
+  }
+
   def soft_delete!
     update!(active: false, deleted_at: Time.current)
   end
@@ -25,8 +36,6 @@ class User < ApplicationRecord
   has_many :inquiries, dependent: :restrict_with_error
   validates :name, presence: true
   validates :role, presence: true
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 end

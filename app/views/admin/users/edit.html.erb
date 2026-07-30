@@ -1,0 +1,45 @@
+<main class="users-page">
+  <nav class="page-nav">
+    <%= link_to "一覧へ戻る", admin_users_path %>
+  </nav>
+
+  <header class="page-header">
+    <div>
+      <h1>ユーザー編集</h1>
+      <p>ユーザー情報を編集します。</p>
+    </div>
+  </header>
+
+  <%= form_with model: [:admin, @user], class: "user-form" do |form| %>
+  <% if @user.errors.any? %>
+    <section class="error-summary">
+      <h2><%= @user.errors.count %>件のエラーがあります</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name, "名前" %>
+    <%= form.text_field :name, required: true, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email, "Eメール" %>
+    <%= form.email_field :email, required: true %>
+  </div>
+
+  <div class="form-role">
+    <% role_options = User.roles %>
+    <%= form.select :role, options_for_select(role_options, @user.role) %>
+  </div>
+  
+  <div class="button-row">
+    <%= form.submit "更新する", class: "button button-primary" %>
+    <%= link_to "キャンセル", admin_users_path, class: "button button-secondary" %>
+  </div>
+<% end %>
+</main>
