@@ -1,13 +1,30 @@
 class User < ApplicationRecord
   scope :active_users, -> { where(active: true, deleted_at: nil) }
-  scope :inactive_users, -> { where(active: false) }
+  scope :inactive_users, -> { where(active: false, deleted_at: nil) }
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :deleted, -> {where.not(deleted_at: nil) }
+  scope :by_active, -> (value){
+    case value
+    when "true"
+      where(active: true)
+    when "false"
+      where(active: false)
+    else
+      all
+    end
+  }
 
   scope :search_keyword, ->(keyword) {
     if keyword.present?
       escaped_keyword = sanitize_sql_like(keyword)
       where("name LIKE :keyword", keyword: "%#{escaped_keyword}%")
+    end
+  }
+
+  scope :search_email_keyword, ->(keyword) {
+    if keyword.present?
+      escaped_keyword = sanitize_sql_like(keyword)
+      where("email LIKE :keyword", keyword: "%#{escaped_keyword}%")
     end
   }
 
@@ -19,8 +36,12 @@ class User < ApplicationRecord
     update!(active: false, deleted_at: Time.current)
   end
 
-  def deactivate!
-    update!(active: false)
+  def deactivate_user
+    update(active: false)
+  end
+
+  def activate_user
+    update(active: true)
   end
   
   def active_for_authentication?

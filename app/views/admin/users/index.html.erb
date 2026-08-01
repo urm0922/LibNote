@@ -8,8 +8,16 @@
   <div class="search-form row mt-3 ms-3 align-self-end">
       <%= form_with url:admin_users_path, method: :get, local: true do |f| %>
         <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.text_field :eq, value: params[:eq], placeholder: "Eメール" %>
         <%= f.label :role, "ステータス" %>
         <%= f.select :role, User.roles.keys.map { |role| [I18n.t("enums.user.role.#{role}"), role] }, { include_blank: "選択してください", selected: params[:role] } %>
+        <div class="user-activate">
+          <%= f.label :active, "利用状態" %>
+          <%= f.radio_button :active, "true", checked: params[:active] == "true"%>
+          <%= f.label :active, "利用中", value: true %>
+          <%= f.radio_button :active, "false", checked: params[:active] == "false" %>
+          <%= f.label :active, "停止中", value: false %>
+        </div>
         <%= f.submit "検索する", name: nil %>
         <%= link_to "条件クリア", admin_users_path, class: "btn btn-success"%>
       <% end %>
@@ -27,6 +35,15 @@
       <% @users.each do |user| %>
         <article class="user-card">
           <div class="user-card-main">
+            <% if user.active == true %>
+              <span class="role-badge active-badge">
+                <p>利用中</p>
+              </span>
+            <% else %>
+              <span class="role-badge deactive-badge">
+                <p>停止中</p>
+              </span>
+            <% end %>
             <div class="user-card-meta">
               <span class="role-badge <%= user_role_class(user) %>">
                 <%= user_role_label(user) %>

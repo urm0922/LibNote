@@ -1,23 +1,44 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
 staff:
   name: "一般スタッフ1"
   email: "ippan1@example.com"
+  role: staff
+  active: true
   
 other_staff:
   name: "一般スタッフ2"
   email: "ippan2@example.com"
+  role: staff
+  active: true
 
 manager:
   name: "指導スタッフ"
   email: "manager@example.com"
   role: manager
+  active: true
 
 admin:
   name: "管理者"
   email: "admin@example.com"
   role: admin
+  active: true
+
+deactive_staff:
+  name: "停止中スタッフ"
+  email: "deactive.staff@example.com"
+  role: staff
+  active: false
+
+admin2:
+  name: "admin2"
+  email: "admin2@example.com"
+  role: admin
+  active: true
+
+deleted_staff:
+  name: "deleted_staff"
+  email: "deleted@example.com"
+  role: staff
+  active: false
+  deleted_at: 2025-07-15 00:00:00
+
+

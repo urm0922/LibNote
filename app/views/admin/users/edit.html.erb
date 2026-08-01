@@ -9,6 +9,13 @@
       <p>ユーザー情報を編集します。</p>
     </div>
   </header>
+  
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
 
   <%= form_with model: [:admin, @user], class: "user-form" do |form| %>
   <% if @user.errors.any? %>
@@ -31,15 +38,23 @@
     <%= form.label :email, "Eメール" %>
     <%= form.email_field :email, required: true %>
   </div>
-
+  
   <div class="form-role">
     <% role_options = User.roles %>
     <%= form.select :role, options_for_select(role_options, @user.role) %>
   </div>
+
+  <div class="user-activate">
+    <% if @user.active? %>
+      <%= link_to "このユーザーを「停止中」にする", deactivate_admin_user_path(@user), data: {turbo_method: :patch }, class: "btn btn-danger mt-3" %>
+    <% elsif @user.deleted_at.nil? %>
+      <%= link_to "このユーザーを「利用中」にする", activate_admin_user_path(@user), data: {turbo_method: :patch }, class: "btn btn-primary mt-3" %>
+    <% end %>
+  </div>
   
   <div class="button-row">
-    <%= form.submit "更新する", class: "button button-primary" %>
-    <%= link_to "キャンセル", admin_users_path, class: "button button-secondary" %>
+    <%= form.submit "更新する", class: "btn btn-success mt-3"%>
+    <%= link_to "キャンセル", admin_users_path, class: "btn btn-secondary mt-3" %>
   </div>
 <% end %>
 </main>
