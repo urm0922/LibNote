@@ -27,8 +27,8 @@
       </div>
       <% if can_edit_inquiry?(@inquiry) %>
         <div class="button-row">
-          <%= link_to "編集", edit_inquiry_path(@inquiry), class: "button button-secondary" %>
-          <%= button_to "削除", inquiry_path(@inquiry), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+          <%= link_to "編集", edit_inquiry_path(@inquiry), class: "btn btn-secondary" %>
+          <%= button_to "削除", inquiry_path(@inquiry), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
         </div>
       <% end %>
     </header>
@@ -36,6 +36,14 @@
     <div class="inquiry-body">
       <%= simple_format(@inquiry.body) %>
     </div>
+
+    <div class="inquriy-image">
+      <% if @inquiry.images.attached? %>
+        <% @inquiry.images.each do |image| %>
+          <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "inquiry-image", alt: "問い合わせ添付画像" %>
+        <% end %>
+      <% end %>
+    </div>  
 
     <section class="comments ms-5 mt-5">
       <%= form_with model:[@inquiry, @comment], local: true do |f| %>
@@ -62,11 +70,11 @@
       <section class="status-actions">
         <h2>ステータス更新</h2>
         <div class="button-row">
-          <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "button button-secondary" %>
+          <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
           <% if current_user.admin? %>
-            <%= button_to "承認する", approve_inquiry_path(@inquiry), method: :patch, class: "button button-primary" %>
+            <%= button_to "承認する", approve_inquiry_path(@inquiry), method: :patch, class: "btn btn-primary" %>
           <% end %>
-          <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "button button-danger" %>
+          <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "btn btn-danger" %>
         </div>
       </section>
     <% end %>
@@ -75,8 +83,8 @@
         <section class="status-actions">
           <h2>ステータス更新</h2>
           <div class="button-row">
-            <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "button button-secondary" %>
-            <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "button button-danger" %>
+            <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
+            <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "btn btn-danger" %>
           </div>
         </section>
       <% end %>

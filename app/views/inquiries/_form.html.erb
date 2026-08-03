@@ -1,4 +1,4 @@
-<%= form_with model: inquiry, class: "inquiry-form" do |form| %>
+<%= form_with model: inquiry, id: "post_inquiry", class: "inquiry-form" do |form| %>
   <% if inquiry.errors.any? %>
     <section class="error-summary">
       <h2><%= inquiry.errors.count %>件のエラーがあります</h2>
@@ -25,6 +25,22 @@
     <%= form.text_area :body, rows: 10, required: true %>
   </div>
   
+  <div class="image mt-5 mb-5">
+    <% if inquiry.images.attached? %>
+      <% inquiry.images.each do |image| %>
+        <% next unless image.blob.persisted? %>
+        <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "inquiry-image", alt: "問い合わせ添付画像" %>
+      <% end %>
+      <div id="previews" ></div>
+      <%= form.label :images, "画像を変更する" %>
+      <%= form.file_field :images, multiple: true, include_hidden: false %>
+    <% else %>
+      <div id="previews"></div>
+      <%= form.label :images, "画像を添付する" %>
+      <%= form.file_field :images, multiple: true, include_hidden: false %>
+    <% end %>
+  </div>
+
   <% if inquiry.draft? %>
     <div class="form-status">
       <% status_options = %w[draft open].map { |status| [t(".status_options.#{status}"), status]} %>
@@ -34,7 +50,7 @@
   <% end %>
 
   <div class="button-row">
-    <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "button button-primary" %>
-    <%= link_to "キャンセル", inquiry.persisted? ? inquiry_path(inquiry) : inquiries_path, class: "button button-secondary" %>
+    <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "btn btn-primary" %>
+    <%= link_to "キャンセル", inquiry.persisted? ? inquiry_path(inquiry) : inquiries_path, class: "btn btn-secondary" %>
   </div>
 <% end %>

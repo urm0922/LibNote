@@ -32,8 +32,8 @@
       </div>
       <% if current_user.admin? %>
         <div class="button-row">
-          <%= link_to "編集", edit_knowledge_article_path(@knowledge_article), class: "button button-secondary" %>
-          <%= button_to "削除", knowledge_article_path(@knowledge_article), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+          <%= link_to "編集", edit_knowledge_article_path(@knowledge_article), class: "btn btn-secondary" %>
+          <%= button_to "削除", knowledge_article_path(@knowledge_article), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
         </div>
       <% end %>
     </header>
@@ -41,6 +41,15 @@
     <div class="inquiry-body">
       <%= simple_format(@knowledge_article.body) %>
     </div>
+
+    <div class="knowledge-image">
+      <% if @knowledge_article.inquiry.images.attached? %>
+        <% images = @knowledge_article.inquiry.images %>
+        <% images.each do |image| %>
+          <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "knowledge_article-image", alt: "ナレッジ添付画像" %>
+        <% end %>
+      <% end %>
+    </div>  
     
     <% if (@knowledge_article.faq_entries.first.present?) && (current_user.admin? || @knowledge_article.faq_enabled == true) %>
       <section id="faq-<%= @knowledge_article.faq_entries.first.id %>" class="FAQ">
@@ -81,15 +90,6 @@
       <% end %>
     </section> 
         
-    <%#<% if current_user.admin? %>
-      <%#section class="status-actions">
-        <h2>ステータス更新</h2>
-        <div class="button-row">
-          <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "button button-danger" %>
-        <%#/div>
-      <%#/section>
-    <%# end %>
-
     <% if current_user.admin? && @knowledge_article.draft? %>
       <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "btn btn-success" %>
     <% end %>

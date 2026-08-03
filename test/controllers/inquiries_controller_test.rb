@@ -324,4 +324,64 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
       
     end
   end
+
+  test "staff can post inquiry attached images" do
+    sign_in users(:staff)
+    image = fixture_file_upload("sample1.png", "image/png")
+
+    assert_difference ["Inquiry.count", "ActiveStorage::Attachment.count"], 1 do
+      post inquiries_path, params: {
+        inquiry: {
+          title: "inquiry_image",
+          body: "body",
+          category_id: categories(:general).id,
+          status: "open",
+          images: [image]
+        }
+      }
+    end
+    
+    inquiry = Inquiry.order(:id).last
+
+    assert inquiry.images.attached?
+    assert_equal "sample1.png", inquiry.images.first.filename.to_s
+    assert_equal "image/png", inquiry.images.first.content_type
+  end
+
+  test "staff can view the attached images on inquiry detail page" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_open)
+
+    inquiry.images.attach(
+      io: File.open(file_fixture("sample1.png")),
+      filename: "sample1.png",
+      content_type: "image/png"
+    )
+
+    get inquiry_path(inquiry)
+
+    assert_response :success
+    assert_select "img.inquiry-image[alt='問い合わせ添付画像']", count: 1
+  end
+
+  test "staff cannot post inquiry attached 4 or more images" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_open)
+
+    4.times do |i|
+    inquiry.images.attach(
+      io: File.open(file_fixture("sample#{i+1}.png")),
+      filename: "sample#{i+1}.png",
+      content_type: "image/png"
+    )
+    end
+
+    put inquiry_path(inquiry)
+
+
+
+    assert_response :unprocessable_entity
+    
+
+  end
 end

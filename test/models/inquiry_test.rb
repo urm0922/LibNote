@@ -74,4 +74,19 @@ class InquiryTest < ActiveSupport::TestCase
       inquiry.destroy
     end
   end
+
+  test "can attach an image" do
+    inquiry = inquiries(:staff_open)
+
+    inquiry.images.attach(
+      io: File.open(file_fixture("sample1.png")),
+      filename: "sample1.png",
+      content_type: "image/png"
+    )
+
+    assert inquiry.images.attached?
+    assert_equal 1, inquiry.images.count
+    assert_equal "sample1.png", inquiry.images.first.filename.to_s
+    assert_equal "image/png", inquiry.images.first.content_type
+  end
 end

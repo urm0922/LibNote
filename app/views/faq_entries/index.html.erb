@@ -34,8 +34,14 @@
             <h2><%= link_to faq_entry.question, knowledge_article_path(faq_entry.knowledge_article, anchor: "faq-#{faq_entry.id}" ) %></h2>
             <p><%= truncate(faq_entry.answer, length: 120) %></p>
           </div>
-          <%= link_to "詳細", knowledge_article_path(faq_entry.knowledge_article, anchor: "faq-#{faq_entry.id}" ), class: "button button-secondary" %>
-        </article>
+          <% if faq_entry.knowledge_article.inquiry.images.attached? %>
+          <% images = faq_entry.knowledge_article.inquiry.images %>
+            <% images.each do |image| %>
+              <%= image_tag image.variant(resize_to_limit: [225, 175]), class: "faq_entry-image", alt: "FAQ添付画像" %>
+            <% end %>
+          <% end %>
+          <%= link_to "詳細", knowledge_article_path(faq_entry.knowledge_article, anchor: "faq-#{faq_entry.id}" ), class: "btn btn-secondary" %>
+          </article>
       <% end %>
     </div>
     <%= paginate @faq_entries %>
@@ -43,7 +49,7 @@
     <section class="empty-state">
       <h2>承認済FAQはまだありません</h2>
       <p>問い合わせを作成できます。</p>
-      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "btn btn-primary" %>
     </section>
   <% end %>
 </main>

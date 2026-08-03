@@ -6,6 +6,8 @@ class Inquiry < ApplicationRecord
               optional: true
   has_many :comments, dependent: :destroy
   has_one :knowledge_article, dependent: :restrict_with_error
+  has_many_attached :images
+  validate :image_count_limit
   validates :title, presence: true
   validates :body, presence: true
   validates :status, presence: true
@@ -30,4 +32,12 @@ class Inquiry < ApplicationRecord
   scope :approved_knowledge, -> {
     approved.includes(:category, :user).order(updated_at: :desc)
   }
+
+  private
+
+  def image_count_limit
+    if images.attachments.size > 3
+      errors.add(:images, "は3枚までしか投稿できません。")
+    end
+  end
 end

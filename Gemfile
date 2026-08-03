@@ -52,6 +52,8 @@ gem "dartsass-sprockets"
 gem "kaminari"
 
 gem "openai"
+gem "image_processing", "~> 1.2"
+
 
 
 group :development, :test do
@@ -76,4 +78,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+
+  
 end

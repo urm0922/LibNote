@@ -43,7 +43,14 @@
             <h2><%= link_to inquiry.title, inquiry_path(inquiry) %></h2>
             <p><%= truncate(inquiry.body, length: 120) %></p>
           </div>
-          <%= link_to "詳細", inquiry_path(inquiry), class: "button button-secondary" %>
+          <% if inquiry.images.attached? %>
+            <% inquiry.images.each do |image| %>
+              <%= image_tag image.variant(resize_to_limit: [225, 175]), 
+                            class: "inquiry-image",
+                            alt: "問い合わせ添付画像" %>
+            <% end %>
+          <% end %>
+          <%= link_to "詳細", inquiry_path(inquiry), class: "btn btn-secondary" %>
         </article>
       <% end %>
     </div>
@@ -52,7 +59,7 @@
     <section class="empty-state">
       <h2>記事はまだありません</h2>
       <p>最初の問い合わせを作成できます。</p>
-      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "btn btn-primary" %>
     </section>
   <% end %>
 </main>

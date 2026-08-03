@@ -174,6 +174,6 @@ class InquiriesController < ApplicationController
   end
 
   def inquiry_params
-    params.require(:inquiry).permit(:title, :body, :category_id, :status)
+    params.require(:inquiry).permit(:title, :body, :category_id, :status, images: [])
   end
 end
