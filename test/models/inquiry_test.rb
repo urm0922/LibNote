@@ -89,4 +89,46 @@ class InquiryTest < ActiveSupport::TestCase
     assert_equal "sample1.png", inquiry.images.first.filename.to_s
     assert_equal "image/png", inquiry.images.first.content_type
   end
+
+  test "images over 5megabytes are invalid" do
+    inquiry = Inquiry.new(
+      title: "title",
+      body: "body",
+      status: :draft,
+      user: users(:staff),
+      category: categories(:general)
+    )
+  
+    inquiry.images.attach(
+      io: StringIO.new("a" * (5.megabytes + 1)),
+      filename: "large.png",
+      content_type: "image/png",
+      identify: false
+    )
+  
+    assert_not inquiry.valid?
+    assert_includes inquiry.errors[:images],
+                    "は1枚あたり5MB以下にしてください"
+  end
+
+  test "invalid unless it is an allowed file type" do
+    inquiry = Inquiry.new(
+      title: "title",
+      body: "body",
+      status: :draft,
+      user: users(:staff),
+      category: categories(:general)
+    )
+
+    inquiry.images.attach(
+      io: StringIO.new("dummy"),
+      filename: "image.gif",
+      content_type: "image/gif",
+      identify: false
+    )
+
+    assert_not inquiry.valid?
+    assert_includes inquiry.errors[:images], "はJPEG、PNG、WEBP形式のみアップロード可能です" 
+  end
+
 end

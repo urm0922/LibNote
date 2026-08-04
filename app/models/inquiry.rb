@@ -7,7 +7,10 @@ class Inquiry < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_one :knowledge_article, dependent: :restrict_with_error
   has_many_attached :images
-  validate :image_count_limit
+  validates :images, 
+    limit: { max: 3, message: 'は3枚までしか投稿できません' },
+    size: { less_than_or_equal_to: 5.megabytes, message: 'は1枚あたり5MB以下にしてください' }, 
+    content_type: { in: %w[image/jpeg image/png image/webp], message: 'はJPEG、PNG、WEBP形式のみアップロード可能です' }
   validates :title, presence: true
   validates :body, presence: true
   validates :status, presence: true
@@ -33,11 +36,4 @@ class Inquiry < ApplicationRecord
     approved.includes(:category, :user).order(updated_at: :desc)
   }
 
-  private
-
-  def image_count_limit
-    if images.attachments.size > 3
-      errors.add(:images, "は3枚までしか投稿できません。")
-    end
-  end
 end

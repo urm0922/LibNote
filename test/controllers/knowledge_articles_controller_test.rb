@@ -1,7 +1,7 @@
 require "test_helper"
 
 class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :inquiries, :categories, :comments, :knowledge_articles
+  fixtures :users, :inquiries, :categories, :comments, :knowledge_articles, "active_storage/blobs", "active_storage/attachments"
 
   test "staff can view only published knowledge articles " do
     sign_in users(:staff)
@@ -173,5 +173,24 @@ class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "published", knowledge_article.reload.status
     assert_equal "published", knowledge_article.faq_entries.first.reload.status
   end
+  
+  test "published knowledge article displays inquiry image" do
+    sign_in users(:staff)
+    knowledge_article = knowledge_articles(:other_staff_published)
+
+    assert knowledge_article.inquiry.images.attached?
+
+    get knowledge_articles_path
+
+    assert_response :success
+    assert_select "img.knowledge_article-image[alt='ナレッジ添付画像']",count: 1
+
+    get knowledge_article_path(knowledge_article)
+
+    assert_response :success
+    assert_select "img.knowledge_article-image[alt='ナレッジ添付画像']",count: 1
+  end
+
+
 end
 

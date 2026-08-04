@@ -1,0 +1,5 @@
+other_staff_approved_image_blob: <%= ActiveStorage::FixtureSet.blob(
+  filename: "sample1.png",
+  content_type: "image/png",
+  service_name: "test"
+) %>

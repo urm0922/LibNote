@@ -368,20 +368,83 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:staff)
     inquiry = inquiries(:staff_open)
 
-    4.times do |i|
-    inquiry.images.attach(
-      io: File.open(file_fixture("sample#{i+1}.png")),
-      filename: "sample#{i+1}.png",
-      content_type: "image/png"
-    )
+    images = 4.times.map do |i|
+      fixture_file_upload(
+        "sample#{i + 1}.png",
+        "image/png"
+      )
     end
 
-    put inquiry_path(inquiry)
-
-
+    assert_no_difference ["Inquiry.count", "ActiveStorage::Attachment.count"] do
+      post inquiries_path, params: {
+        inquiry: {
+          title: "画像が多すぎる問い合わせ",
+          body: "本文",
+          category_id: categories(:general).id,
+          status: "open",
+          images: images
+        }
+      }
+    end
 
     assert_response :unprocessable_entity
-    
+    assert_includes response.body, "3枚までしか投稿できません"
 
+    inquiry = inquiries(:staff_open)
+
+    assert_no_difference "ActiveStorage::Attachment.count" do
+      patch inquiry_path(inquiry), params: {
+        inquiry: {
+          title: inquiry.title,
+          body: inquiry.body,
+          category_id: inquiry.category_id,
+          status: inquiry.status,
+          images: images
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "3枚までしか投稿できません"
   end
+
+  test "staff can view multiple images on index and detail" do
+    sign_in users(:staff)
+
+    images = 3.times.map do |i|
+      fixture_file_upload(
+        "sample#{i + 1}.png",
+        "image/png"
+      )
+    end
+
+    post inquiries_path, params: {
+        inquiry: {
+          title: "3枚の画像の問い合わせ",
+          body: "本文",
+          category_id: categories(:general).id,
+          status: "open",
+          images: images
+        }
+      }
+    inquiry = Inquiry.order(:id).last
+
+    assert_redirected_to inquiry_path(inquiry)
+    get inquiry_path(inquiry)
+    assert_select "img.inquiry-image[alt='問い合わせ添付画像']", count: 3
+
+    get inquiries_path
+    assert_select "img.inquiry-image[alt='問い合わせ添付画像']", count: 3
+  end
+
+  test "staff can view inquiry detail without image" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_open)
+    get inquiry_path(inquiry)
+
+    assert_response :success
+    assert_includes response.body, inquiry.title
+  end
+
+
 end

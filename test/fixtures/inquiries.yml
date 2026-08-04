@@ -47,7 +47,6 @@ staff_approved:
   status: approved
   approved_at: 2026-07-13 00:00:00
 
-
 staff_answered:
   title: "自分の問い合わせ(answered)"
   body: "自分の問い合わせ(answered)について"
@@ -55,14 +54,12 @@ staff_answered:
   category: general
   status: answered
 
-
 staff_rejected:
   title: "自分の問い合わせ(rejected)"
   body: "自分の問い合わせ(rejected)について"
   user: staff
   category: general
   status: rejected
-
 
 other_staff_open:
   title: "他人の問い合わせ(open)"
@@ -79,7 +76,6 @@ other_staff_approved:
   status: approved
   approved_at: 2026-07-13 00:00:00
 
-
 other_staff_special_approved:
   title: "他人の特殊な問い合わせ(approved)"
   body: "他人の特殊な問い合わせ(approved)について"
@@ -95,4 +91,3 @@ staff_special_approved:
   category: general
   status: approved
   approved_at: 2026-07-13 00:00:00
-

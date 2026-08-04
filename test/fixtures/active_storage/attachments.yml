@@ -1,0 +1,4 @@
+other_staff_approved_image_attachment:
+  name: images
+  record: other_staff_approved (Inquiry)
+  blob: other_staff_approved_image_blob
