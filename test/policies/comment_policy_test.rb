@@ -41,10 +41,10 @@ class CommentPolicyTest < ActiveSupport::TestCase
     assert_not policy.destroy?
   end
 
-  test "manager can create and destroy own comments on inquiries except approved" do
+  test "manager can create and destroy own comments on other's inquiries except draft and approved" do
     user = users(:manager)
     
-    %w[draft open answered rejected].each do |status|
+    %w[open answered rejected].each do |status|
       inquiry = inquiries(:"staff_#{status}")
       comment = inquiry.comments.build(user: user, body: "test comment")
       policy = CommentPolicy.new(user, comment)
@@ -53,6 +53,15 @@ class CommentPolicyTest < ActiveSupport::TestCase
       assert policy.destroy?, "manager should destroy own comment on #{status} inquiry"
     end
     
+    comment = inquiries(:staff_draft).comments.build(
+      user: user,
+      body: "test comment"
+    )
+    policy = CommentPolicy.new(user, comment)
+
+    assert_not policy.create?
+    assert_not policy.destroy?
+
     comment = inquiries(:staff_approved).comments.build(
       user: user,
       body: "test comment"
@@ -109,6 +118,28 @@ class CommentPolicyTest < ActiveSupport::TestCase
       policy = CommentPolicy.new(user, comment)
       assert policy.destroy?, "admin should destroy other's comment on #{status} inquiry"
     end
+  end
+
+  test "manager cannot comment in other's draft inquiry" do
+    user = users(:manager)
+    inquiry = inquiries(:staff_draft)
+    comment = inquiry.comments.build(
+      body: "test comment"
+    )
+    policy = CommentPolicy.new(user, comment)
+    assert_not policy.create?
+  end
+
+  test "manager can comment own draft inquiry" do
+    user = users(:manager)
+    comment = inquiries(:manager_draft).comments.build(
+      user: user,
+      body: "test comment"
+    )
+    policy = CommentPolicy.new(user, comment)
+
+    assert policy.create?
+    assert policy.destroy?
   end
   
 end

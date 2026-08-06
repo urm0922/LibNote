@@ -76,13 +76,32 @@ class InquiryPolicyTest < ActiveSupport::TestCase
   test "admin can handle inquiries of any status" do
     user = users(:admin)
     statuses = %w[draft open answered rejected approved]
-    actions = %w[show? edit? update? mark_as_answered? approve? reject? destroy?]
+    actions = %w[show? edit? update? mark_as_answered? approve? reject?]
     statuses.each do |status|
       inquiry = inquiries(:"staff_#{status}")
         actions.each do |action|
           assert InquiryPolicy.new(user, inquiry).public_send(action), "admin should perform #{action} on #{status}"
         end
     end
+  end
+
+  test "admin can destroy inquiry of non-knowledge" do
+    user = users(:admin)
+    statuses = %w[draft open answered rejected]
+    statuses.each do |status|
+      inquiry = inquiries(:"staff_#{status}")
+      policy = InquiryPolicy.new(user, inquiry)
+      assert policy.destroy?, "admin should destroy #{status} inquiry"
+    end
+  end
+
+  test "admin cannot destroy inquiry linked knowledge article" do
+    policy = InquiryPolicy.new(
+      users(:admin),
+      inquiries(:staff_approved)
+    )
+
+    assert_not policy.destroy?
   end
 
   test "manager can assign only draft and open statuses" do
@@ -94,16 +113,21 @@ class InquiryPolicyTest < ActiveSupport::TestCase
     assert_equal %w[draft open], policy.permitted_statuses
   end
 
-  test "manager can update and destroy non-approved inquiries" do
+  test "manager can update and destroy other's inquiries except draft and approved" do
     user = users(:manager)
-    statuses = %w[draft open answered rejected]
+    statuses = %w[open answered rejected]
     statuses.each do |status|
       inquiry = inquiries(:"staff_#{status}")
       policy = InquiryPolicy.new(user, inquiry)
-
+      
       assert policy.update?, "manager should update #{status} inquiry"
       assert policy.destroy?, "manager should destroy #{status} inquiry"
     end
+
+    draft_policy = InquiryPolicy.new(user, inquiries(:staff_draft))
+
+    assert_not draft_policy.update?
+    assert_not draft_policy.destroy?
 
     approved_policy = InquiryPolicy.new(user, inquiries(:staff_approved))
 
@@ -120,5 +144,17 @@ class InquiryPolicyTest < ActiveSupport::TestCase
     assert policy.create?
     assert_equal %w[draft open], policy.creatable_statuses
   end
+
+  test "admin can handle another user's inquiry" do
+    policy = InquiryPolicy.new(
+      users(:admin),
+      inquiries(:staff_draft)
+    )
+
+    assert policy.show?
+    assert policy.update?
+    assert policy.destroy?
+  end
+
 end
 

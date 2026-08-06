@@ -41,7 +41,7 @@
       <%= simple_format(@inquiry.body) %>
     </div>
 
-    <div class="inquriy-image">
+    <div class="inquiry-image">
       <% if @inquiry.images.attached? %>
         <% @inquiry.images.each do |image| %>
           <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "inquiry-image", alt: "問い合わせ添付画像" %>
@@ -78,7 +78,7 @@
           <% if policy(@inquiry).mark_as_answered? %>
             <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
           <% end %>
-          <% if policy(@inquiry).approved? %>
+          <% if policy(@inquiry).approve? %>
             <%= button_to "承認する", approve_inquiry_path(@inquiry), method: :patch, class: "btn btn-primary" %>
           <% end %>
           <% if policy(@inquiry).reject? %>

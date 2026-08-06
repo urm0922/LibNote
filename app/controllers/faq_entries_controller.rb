@@ -1,12 +1,11 @@
 class FaqEntriesController < ApplicationController
   before_action :authenticate_user! 
   def index
-    @faq_entries = FaqEntry.published
-                           .joins(:knowledge_article)
-                           .merge(KnowledgeArticle.published.where(faq_enabled: true))
+    @faq_entries = FaqEntry.publicly_visible
                            .includes(:knowledge_article)
                            .search_keyword(params[:q])
-                           .page(params[:page]).reverse_order
+                           .page(params[:page])
+                           .reverse_order
   end
 
   def show

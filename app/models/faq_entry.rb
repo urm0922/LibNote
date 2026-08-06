@@ -3,6 +3,13 @@ class FaqEntry < ApplicationRecord
   has_one :inquiry, through: :knowledge_article
 
   enum status: { draft: 0, published: 1,archived: 2}
+  
+  scope :publicly_visible, -> {
+    published
+      .joins(:knowledge_article)
+      .merge(KnowledgeArticle.published.where(faq_enabled: true)
+    )
+  }
 
   scope :search_keyword, ->(keyword) {
     if keyword.present?

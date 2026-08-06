@@ -160,6 +160,135 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, inquiries(:staff_draft).title
   end
 
+  test "manager cannot handle other's draft inquiry" do
+    inquiry = inquiries(:staff_draft)
+    sign_in users(:manager)
+    get inquiry_path(inquiry)
+    
+    
+    assert_redirected_to inquiries_path
+    assert_equal "この問い合わせを閲覧する権限がありません", flash[:alert]
+
+    patch inquiry_path(inquiry), params: {
+      inquiry: {
+        title: "Changed_title",
+        body: "Changed_body"
+      }
+    }
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_not_equal "Changed_title", inquiry.reload.title
+    assert_not_equal "Changed_body", inquiry.reload.body
+    
+    assert_no_difference "Inquiry.count" do
+      delete inquiry_path(inquiry)
+    end
+
+    assert_redirected_to inquiry_path(inquiry)
+  end
+
+  test "manager can handle own draft inquiry" do
+    sign_in users(:manager)
+    inquiry = inquiries(:manager_draft)
+
+    get inquiry_path(inquiry)
+    
+    assert_response :success
+    assert_includes response.body, inquiry.reload.title
+
+    patch inquiry_path(inquiry), params: {
+      inquiry: {
+        title: "Changed_title",
+        body: "Changed_body"
+      }
+    }
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_equal "Changed_title", inquiry.reload.title
+    assert_equal "Changed_body", inquiry.reload.body
+    
+    assert_difference "Inquiry.count", -1 do
+      delete inquiry_path(inquiry)
+    end
+
+    assert_redirected_to inquiries_path
+  end
+
+  test "manager can handle other's open inquiry" do
+    sign_in users(:manager)
+    inquiry = inquiries(:staff_open)
+
+    get inquiry_path(inquiry)
+    
+    assert_response :success
+    assert_includes response.body, inquiry.reload.title
+
+    patch inquiry_path(inquiry), params: {
+      inquiry: {
+        title: "Changed_title",
+        body: "Changed_body"
+      }
+    }
+
+    assert_redirected_to inquiry_path(inquiry)
+    assert_equal "Changed_title", inquiry.reload.title
+    assert_equal "Changed_body", inquiry.reload.body
+    
+    assert_difference "Inquiry.count", -1 do
+      delete inquiry_path(inquiry)
+    end
+
+    assert_redirected_to inquiries_path
+  end
+
+  test "admin can view and update any inquiries" do
+    sign_in users(:admin)
+    statuses = %w[draft open answered approved rejected]
+
+    statuses.each do |status|
+      inquiry = inquiries(:"staff_#{status}")
+      get inquiry_path(inquiry)
+    
+      assert_response :success
+      assert_includes response.body, inquiry.reload.title, "admin should view detail on #{status} inquiry"
+
+      patch inquiry_path(inquiry), params: {
+        inquiry: {
+          title: "Changed_title",
+          body: "Changed_body"
+        }
+      }
+
+      assert_redirected_to inquiry_path(inquiry)
+      assert_equal "Changed_title", inquiry.reload.title, "admin should change title of #{status} inquiry"
+      assert_equal "Changed_body", inquiry.reload.body, "admin should change body of #{status} inquiry"
+    end
+  end
+
+  test "admin can destroy inquiries of non-knowledge" do
+    sign_in users(:admin)
+    statuses = %w[draft open answered rejected]
+    statuses.each do |status|
+      inquiry = inquiries(:"staff_#{status}")
+      assert_difference "Inquiry.count", -1, "admin should destroy #{status} inquiry" do
+        delete inquiry_path(inquiry)
+      end
+      assert_redirected_to inquiries_path
+    end
+  end
+
+  test "admin cannot destroy inquiry linked knowledge article" do
+    sign_in users(:admin)
+    inquiry = inquiries(:staff_approved)
+
+    assert_no_difference "Inquiry.count" do
+      delete inquiry_path(inquiry)
+    end
+
+    assert Inquiry.exists?(inquiry.id)
+    assert_redirected_to inquiry_path(inquiry)
+  end
+
   test "admin can see another user's inquiry in search results" do
     sign_in users(:admin)
     get inquiries_path, params: { q: "open" }
@@ -176,6 +305,16 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, inquiries(:admin_draft).title
     assert_not_includes response.body, inquiries(:staff_draft).title
+  end
+
+  test "admin can directly access another user's draft" do
+    sign_in users(:admin)
+    inquiry = inquiries(:staff_draft)
+
+    get inquiry_path(inquiry)
+
+    assert_response :success
+    assert_includes response.body, inquiry.title
   end
 
   test "staff can search by keyword" do
@@ -445,6 +584,5 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, inquiry.title
   end
-
 
 end

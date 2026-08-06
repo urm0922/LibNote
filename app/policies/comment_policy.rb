@@ -20,9 +20,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def inquiry_accessible?
-    user.admin? ||
-      user.manager? ||
-      inquiry.user_id == user.id
+    InquiryPolicy.new(user, inquiry).show?
   end
 
   def commentable_status?

@@ -118,13 +118,21 @@ class InquiriesController < ApplicationController
 
   def destroy
     authorize @inquiry
-    @inquiry.destroy
-    redirect_to inquiries_path, notice: "問い合わせを削除しました"
+    if @inquiry.destroy
+      redirect_to inquiries_path, notice: "問い合わせを削除しました"
+    else
+      redirect_to inquiry_path(@inquiry), alert: "関連するナレッジ記事が存在するため削除できません"
+    end
   end
 
   private
 
   def handle_unauthorized_inquiry(exception)
+    if exception.query == "show?"
+      redirect_to inquiries_path, alert: "この問い合わせを閲覧する権限がありません"
+      return
+    end
+    
     message =
       case exception.query
       when "edit?"

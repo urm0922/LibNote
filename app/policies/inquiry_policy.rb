@@ -36,7 +36,7 @@ class InquiryPolicy < ApplicationPolicy
   end
 
   def destroy?
-    accessible? && current_status_allowed?(:destroyable)
+    accessible? && current_status_allowed?(:destroyable) && knowledge_article_absent?
   end
 
   def can_status_action?
@@ -70,11 +70,11 @@ class InquiryPolicy < ApplicationPolicy
   end
 
   def accessible?
-    privileged? || owner?
+    user.admin? || owner? || manager_can_access_non_draft?
   end
 
-  def privileged?
-    user.admin? || user.manager?
+  def manager_can_access_non_draft?
+    user.manager? && !record.draft?
   end
 
   def owner?
@@ -83,6 +83,10 @@ class InquiryPolicy < ApplicationPolicy
 
   def current_status_allowed?(operation)
     rules.fetch(operation).include?(record.status)
+  end
+
+  def knowledge_article_absent?
+    record.knowledge_article.nil?
   end
 
   def rules

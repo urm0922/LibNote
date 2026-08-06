@@ -131,4 +131,14 @@ class InquiryTest < ActiveSupport::TestCase
     assert_includes inquiry.errors[:images], "はJPEG、PNG、WEBP形式のみアップロード可能です" 
   end
 
+  test "cannot destroy inquiry linked to knowledge article" do
+    inquiry = inquiries(:staff_approved)
+  
+    assert_no_difference "Inquiry.count" do
+      assert_not inquiry.destroy
+    end
+  
+    assert inquiry.errors.present?
+  end
+
 end
