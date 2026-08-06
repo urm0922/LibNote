@@ -4,7 +4,7 @@ require "rails/test_help"
 
 module ActiveSupport
   class TestCase
-    self.fixture_paths = [Rails.root.join("test/fixtures")]
+    self.fixture_paths = ["test/fixtures"]
     parallelize(workers: 1, with: :threads)
     fixtures :all
   end

@@ -19,7 +19,7 @@ class Admin::UsersController < Admin::BaseController
     role_will_change =
       requested_role.present? && requested_role != @user.role
       
-    if role_will_change && own_change_forbidden?
+    if role_will_change && admin_forbidden_option?
       @user.assign_attributes(user_params.except(:role))
       @user.errors.add(:role, "このユーザーの役割は変更できません")
       
@@ -42,7 +42,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def deactivate
-    unless own_change_forbidden?
+    unless admin_forbidden_option?
       if @user.deactivate_user
         redirect_to edit_admin_user_path(@user), notice: "ユーザー状態を「停止中」に設定しました"
       else
@@ -64,7 +64,7 @@ class Admin::UsersController < Admin::BaseController
     params.require(:user).permit(:name, :email, :role)
   end
 
-  def own_change_forbidden?
+  def admin_forbidden_option?
     current_user == @user || last_active_admin?(@user)
   end
 

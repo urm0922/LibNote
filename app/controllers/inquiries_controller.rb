@@ -1,34 +1,26 @@
 class InquiriesController < ApplicationController
+  rescue_from Pundit::NotAuthorizedError,
+              with: :handle_unauthorized_inquiry
   before_action :authenticate_user!
   before_action :set_inquiry, except: [:index, :new, :create, :confirm]
   before_action :set_categories, only: [:index, :new, :create, :edit, :update]
 
   def mark_as_answered
-    if @inquiry.approved? && !current_user.admin?
-      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
-      return
-    end
-
-    if current_user.admin? || current_user.manager?
-      @inquiry.update(status: :answered)
-      redirect_to inquiry_path(@inquiry), notice: "回答済みにしました"
-    else
-      redirect_to inquiry_path(@inquiry), alert: "権限がありません"
-    end
+    authorize @inquiry, :mark_as_answered?
+    
+    @inquiry.update(status: :answered)
+    redirect_to inquiry_path(@inquiry), notice: "回答済みにしました"
   end
 
   def approve
-    if current_user.admin?
+    authorize @inquiry, :approve?
       Inquiries::ApproveAndGenerateDrafts.new(
         inquiry: @inquiry,
         approver: current_user
       ).call
 
-      redirect_to inquiry_path(@inquiry), notice: "承認しました"
-    else
-      redirect_to inquiry_path(@inquiry), alert: "権限がありません"
-    end
-
+    redirect_to inquiry_path(@inquiry), notice: "承認しました"
+    
     rescue Inquiries::ApproveAndGenerateDrafts::GenerationError
       redirect_to inquiry_path(@inquiry), alert: "AIによる下書き生成に失敗しました。時間をおいて再度お試しください"
     
@@ -38,17 +30,10 @@ class InquiriesController < ApplicationController
   end
 
   def reject
-    if @inquiry.approved? && !current_user.admin?
-      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
-      return
-    end
-
-    if current_user.admin? || current_user.manager?
-      @inquiry.update(status: :rejected)
-      redirect_to inquiry_path(@inquiry), notice: "差し戻しました"
-    else
-      redirect_to inquiry_path(@inquiry), alert: "権限がありません"
-    end
+    authorize @inquiry, :reject?
+    
+    @inquiry.update(status: :rejected)
+    redirect_to inquiry_path(@inquiry), notice: "差し戻しました"
   end
 
   def index
@@ -76,13 +61,18 @@ class InquiriesController < ApplicationController
   end
 
   def create
-    unless params.dig(:inquiry, :status).in?(%w[draft open])
+    allowed_statuses = policy(Inquiry).creatable_statuses
+    requested_status = params.dig(:inquiry, :status)
+
+    unless requested_status.in?(allowed_statuses)
       @inquiry = current_user.inquiries.new(inquiry_params.except(:status))
       render :new, status: :unprocessable_entity
       return
     end
-      
+    
     @inquiry = current_user.inquiries.new(inquiry_params)
+
+    authorize @inquiry
 
     if @inquiry.save
       redirect_to inquiry_path(@inquiry), notice: "問い合わせを作成しました"
@@ -97,39 +87,22 @@ class InquiriesController < ApplicationController
   end
 
   def show
-    @comment = Comment.new
+    authorize @inquiry
+    @comment = @inquiry.comments.build(user: current_user)
     @comments = @inquiry.comments.includes(:user).order(created_at: :asc)
   end
 
   def edit
-    if @inquiry.approved? && !current_user.admin?
-      redirect_to inquiry_path(@inquiry), alert: "承認済の問い合わせは編集できません"
-      return
-    end
-
-    if !(current_user.admin? || current_user.manager?) && !(@inquiry.draft? || @inquiry.open?) 
-      redirect_to inquiry_path(@inquiry), alert: "確定済みの問い合わせのため編集できません"
-    end
+    authorize @inquiry
   end
 
   def update
-    can_update = current_user.admin? || @inquiry.draft? || @inquiry.open? || (current_user.manager? && !@inquiry.approved?)
-    unless can_update
-      redirect_to inquiry_path(@inquiry), alert: "更新できません"
-      return
-    end
+    authorize @inquiry
 
     requested_status = params.dig(:inquiry, :status)
-    allowed_statuses =
-      if current_user.admin?
-        %w[draft open answered approved rejected]
-      elsif current_user.manager?
-        %w[draft open answered rejected]
-      else
-        %w[draft open]
-      end
+    allowed_statuses = policy(@inquiry).permitted_statuses
       
-    if requested_status && !requested_status.in?(allowed_statuses)
+    if requested_status.present? && !requested_status.in?(allowed_statuses)
       @inquiry.assign_attributes(inquiry_params.except(:status))
       @inquiry.errors.add(:status, "が不正です")
       render :edit, status: :unprocessable_entity
@@ -144,22 +117,34 @@ class InquiriesController < ApplicationController
   end
 
   def destroy
-    can_destroy = if current_user.admin?
-                    %w[draft open answered approved rejected]
-                  elsif current_user.manager?
-                    %w[draft open answered rejected]
-                  else
-                    %w[draft open]
-                  end
-    if @inquiry.status.in?(can_destroy)
-      @inquiry.destroy
-      redirect_to inquiries_path, notice: "問い合わせを削除しました"
-    else
-      redirect_to inquiry_path(@inquiry), alert: "確定済みのため削除できません"
-    end
+    authorize @inquiry
+    @inquiry.destroy
+    redirect_to inquiries_path, notice: "問い合わせを削除しました"
   end
 
   private
+
+  def handle_unauthorized_inquiry(exception)
+    message =
+      case exception.query
+      when "edit?"
+        if exception.record.approved?
+          "承認済の問い合わせは編集できません"
+        else
+          "確定済みの問い合わせのため編集できません"
+        end
+      when "update?"
+        "更新できません"
+      when "destroy?"
+        "確定済みのため削除できません"
+      when "mark_as_answered?", "reject?"
+        "この問い合わせを処理する権限がありません"
+      else
+        "権限がありません"
+      end
+
+    redirect_to inquiry_path(exception.record), alert: message
+  end
 
   def set_inquiry
     if current_user.admin? || current_user.manager?

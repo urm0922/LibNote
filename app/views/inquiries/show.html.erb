@@ -25,9 +25,13 @@
         </div>
         <h1><%= @inquiry.title %></h1>
       </div>
-      <% if can_edit_inquiry?(@inquiry) %>
+      <% if policy(@inquiry).update? %>
         <div class="button-row">
           <%= link_to "編集", edit_inquiry_path(@inquiry), class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+      <% if policy(@inquiry).destroy? %>
+        <div class="button-row">
           <%= button_to "削除", inquiry_path(@inquiry), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
         </div>
       <% end %>
@@ -44,11 +48,13 @@
         <% end %>
       <% end %>
     </div>  
-
+    
     <section class="comments ms-5 mt-5">
-      <%= form_with model:[@inquiry, @comment], local: true do |f| %>
-        <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
-        <%= f.submit "送信", class: "btn btn-success mb-4" %>
+      <% if policy(@comment).create?%>
+        <%= form_with model:[@inquiry, @comment], local: true do |f| %>
+          <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
+          <%= f.submit "送信", class: "btn btn-success mb-4" %>
+        <% end %>
       <% end %>
 
       <p>コメント件数：<%= @comments.count %> 件</p>
@@ -58,37 +64,28 @@
           <%= l comment.created_at, format: :long %>
         </time>
         <%= comment.body %>
-        <% if current_user.admin? || comment.user == current_user %>
+        <% if policy(comment).destroy? %>
           <div class="comment-delete">
              <%= button_to "削除", inquiry_comment_path(@inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
           </div>
         <% end %>
       <% end %>
     </section> 
-        
-    <% if current_user.admin? %>
+    <% if policy(@inquiry).can_status_action? %>
       <section class="status-actions">
         <h2>ステータス更新</h2>
         <div class="button-row">
-          <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
-          <% if current_user.admin? %>
+          <% if policy(@inquiry).mark_as_answered? %>
+            <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
+          <% end %>
+          <% if policy(@inquiry).approved? %>
             <%= button_to "承認する", approve_inquiry_path(@inquiry), method: :patch, class: "btn btn-primary" %>
           <% end %>
-          <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "btn btn-danger" %>
+          <% if policy(@inquiry).reject? %>
+            <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "btn btn-danger" %>
+          <% end %>
         </div>
       </section>
     <% end %>
-    <% if current_user.manager? %>
-      <% unless @inquiry.approved? %>
-        <section class="status-actions">
-          <h2>ステータス更新</h2>
-          <div class="button-row">
-            <%= button_to "回答済みにする", mark_as_answered_inquiry_path(@inquiry), method: :patch, class: "btn btn-secondary" %>
-            <%= button_to "差し戻す", reject_inquiry_path(@inquiry), method: :patch, class: "btn btn-danger" %>
-          </div>
-        </section>
-      <% end %>
-    <% end %>
-    
   </article>
 </main>
