@@ -1,114 +1,70 @@
 # LibNote ER図
 
-このER図は、READMEに記載されている機能整理と、現在の `db/schema.rb` / Railsモデルから読み取れる実装状況をもとに作成しています。
+## 1. 文書情報
 
-## 現状のER図
+| 項目 | 内容 |
+|:---|:---|
+| 対象 | LibNote 現行データベース |
+| 基準スキーマ | `db/schema.rb` |
+| スキーマバージョン | `2026_08_01_073923` |
+| 作成日 | 2026-08-07 |
 
-現在の実装では、問い合わせ投稿、カテゴリ分類、ユーザー、コメントを中心に構成されています。
+実線はDB外部キー、点線はアプリケーション上のポリモーフィック関連を表します。カーディナリティはDB制約を基準にしています。
+
+## 2. 業務テーブル
 
 ```mermaid
 erDiagram
-    USERS ||--o{ INQUIRIES : "投稿する"
-    USERS ||--o{ COMMENTS : "コメントする"
-    CATEGORIES ||--o{ INQUIRIES : "分類する"
-    INQUIRIES ||--o{ COMMENTS : "回答・コメントを持つ"
+    USERS ||--o{ INQUIRIES : "投稿者 user_id"
+    USERS o|--o{ INQUIRIES : "承認者 approver_id"
+    CATEGORIES ||--o{ INQUIRIES : "分類"
+    USERS ||--o{ COMMENTS : "投稿"
+    INQUIRIES ||--o{ COMMENTS : "コメント"
+    USERS ||--o{ KNOWLEDGE_ARTICLES : "作成者 author_id"
+    CATEGORIES ||--o{ KNOWLEDGE_ARTICLES : "分類"
+    INQUIRIES ||--o{ KNOWLEDGE_ARTICLES : "元問い合わせ"
+    KNOWLEDGE_ARTICLES ||--o{ FAQ_ENTRIES : "FAQ"
 
     USERS {
         bigint id PK
-        string email "ログインID"
+        string email UK
         string encrypted_password
-        string name "表示名"
-        string role "staff, manager, admin"
-        string reset_password_token
+        string reset_password_token UK
         datetime reset_password_sent_at
         datetime remember_created_at
+        string name
+        string role
         datetime created_at
         datetime updated_at
+        boolean active
+        datetime deleted_at
     }
 
     CATEGORIES {
         bigint id PK
-        string name "カテゴリ名"
+        string name UK
         datetime created_at
         datetime updated_at
     }
 
     INQUIRIES {
         bigint id PK
-        string title "問い合わせタイトル"
-        text body "問い合わせ本文"
-        integer user_id "ユーザーID（FK）"
-        integer category_id "カテゴリID（DB外部キー制約未設定）"
-        integer status "draft, open, answered, approved, rejected"
+        string title
+        text body
+        integer user_id FK
+        integer category_id FK
+        integer status
         datetime created_at
         datetime updated_at
+        bigint approver_id FK
+        datetime approved_at
     }
 
     COMMENTS {
         bigint id PK
         bigint inquiry_id FK
         bigint user_id FK
-        text body "回答・コメント本文"
-        datetime created_at
-        datetime updated_at
-    }
-```
-
-## テーブルの役割
-
-| テーブル | 役割 | README上の対応機能 |
-|:---|:---|:---|
-| `users` | ログインユーザーと権限を管理する | ユーザー管理、権限管理 |
-| `inquiries` | 業務上の疑問・問い合わせを管理する | 問い合わせ投稿、ステータス管理、承認ワークフロー |
-| `comments` | 問い合わせに対する回答・補足を管理する | 回答・コメント機能、回答履歴 |
-| `categories` | 問い合わせの業務分野を分類する | カテゴリ管理、カテゴリ検索 |
-
-## ステータスと権限
-
-`inquiries.status` はRails enumとして次の状態を持ちます。
-
-| 値 | 状態 | 想定される意味 |
-|:---|:---|:---|
-| `draft` | 下書き | 未公開または作成途中 |
-| `open` | 未回答 | 問い合わせ投稿済み |
-| `answered` | 回答済み | 直営スタッフ・業務担当者が回答済み |
-| `approved` | 承認済み | 管理者が正式情報として承認済み |
-| `rejected` | 差し戻し | 修正・再確認が必要 |
-
-`users.role` はRails enumとして次のロールを持ちます。
-
-| 値 | README上のロール | 主な役割 |
-|:---|:---|:---|
-| `staff` | 委託スタッフ | 問い合わせを投稿し、ナレッジを参照する |
-| `manager` | 直営スタッフ | 問い合わせへ回答し、差し戻しや回答済み化を行う |
-| `admin` | 管理者 | 承認、差し戻し、ユーザー・カテゴリ管理を担う |
-
-## READMEから見た拡張候補ER図
-
-READMEでは、問い合わせと回答をもとにナレッジ記事やFAQを作成し、マニュアル連携や検索に広げていく構想が示されています。以下は、今後の機能追加時に検討できる概念ER図です。現時点の `db/schema.rb` には未実装のテーブルを含みます。
-
-```mermaid
-erDiagram
-    USERS ||--o{ INQUIRIES : "投稿する"
-    USERS ||--o{ COMMENTS : "回答する"
-    USERS ||--o{ KNOWLEDGE_ARTICLES : "作成・更新する"
-    USERS ||--o{ APPROVALS : "承認・差し戻しする"
-
-    FACILITIES ||--o{ USERS : "所属する"
-    FACILITIES ||--o{ INQUIRIES : "発生拠点"
-
-    CATEGORIES ||--o{ INQUIRIES : "分類する"
-    CATEGORIES ||--o{ KNOWLEDGE_ARTICLES : "分類する"
-
-    INQUIRIES ||--o{ COMMENTS : "回答・コメントを持つ"
-    INQUIRIES ||--o| KNOWLEDGE_ARTICLES : "ナレッジ化される"
-    KNOWLEDGE_ARTICLES ||--o{ APPROVALS : "承認履歴を持つ"
-    KNOWLEDGE_ARTICLES ||--o{ FAQ_ITEMS : "FAQとして切り出す"
-    MANUALS ||--o{ KNOWLEDGE_ARTICLES : "根拠として参照される"
-
-    FACILITIES {
-        bigint id PK
-        string name
+        text body
         datetime created_at
         datetime updated_at
     }
@@ -125,40 +81,83 @@ erDiagram
         datetime published_at
         datetime created_at
         datetime updated_at
+        boolean generated_by_ai
     }
 
-    FAQ_ITEMS {
+    FAQ_ENTRIES {
         bigint id PK
         bigint knowledge_article_id FK
-        string question
+        text question
         text answer
-        integer display_order
-        datetime created_at
-        datetime updated_at
-    }
-
-    APPROVALS {
-        bigint id PK
-        bigint knowledge_article_id FK
-        bigint approver_id FK
-        string action
-        text note
-        datetime created_at
-        datetime updated_at
-    }
-
-    MANUALS {
-        bigint id PK
-        string title
-        string source_file
-        text summary
+        integer status
+        boolean generated_by_ai
+        datetime published_at
         datetime created_at
         datetime updated_at
     }
 ```
 
-## 実装メモ
+### カーディナリティ補足
 
-- `Inquiry` はモデル上 `belongs_to :user` / `belongs_to :category` です。
-- 現在のDBスキーマでは `inquiries.user_id`/ `inquiries.category_id`ともに `users` への外部キー制約が追加済みです。
-- READMEの「ナレッジ一覧表示」「ナレッジ詳細表示」「FAQ化」「マニュアル連携」をDBとして分離するなら、`knowledge_articles` を中心に、必要に応じて `faq_items`、`manuals`、`approvals` を追加する構成が自然です。
+- 1件の問い合わせには投稿者が必ず1人、承認者は0または1人紐づきます。
+- 1件の問い合わせは複数のコメントを持てます。
+- `Inquiry` モデルはナレッジ記事を0または1件と想定していますが、DBに一意制約がないため、物理ER図では1対多として表しています。
+- 1件のナレッジ記事は複数のFAQを持てます。
+
+## 3. Active Storage
+
+```mermaid
+erDiagram
+    INQUIRIES ||..o{ ACTIVE_STORAGE_ATTACHMENTS : "images（論理関連）"
+    ACTIVE_STORAGE_BLOBS ||--o{ ACTIVE_STORAGE_ATTACHMENTS : "ファイル実体"
+    ACTIVE_STORAGE_BLOBS ||--o{ ACTIVE_STORAGE_VARIANT_RECORDS : "画像バリアント"
+
+    INQUIRIES {
+        bigint id PK
+    }
+
+    ACTIVE_STORAGE_ATTACHMENTS {
+        bigint id PK
+        string name
+        string record_type
+        bigint record_id
+        bigint blob_id FK
+        datetime created_at
+    }
+
+    ACTIVE_STORAGE_BLOBS {
+        bigint id PK
+        string key UK
+        string filename
+        string content_type
+        text metadata
+        string service_name
+        bigint byte_size
+        string checksum
+        datetime created_at
+    }
+
+    ACTIVE_STORAGE_VARIANT_RECORDS {
+        bigint id PK
+        bigint blob_id FK
+        string variation_digest
+    }
+```
+
+`Inquiry#images` は `active_storage_attachments` の `record_type = 'Inquiry'`、`name = 'images'` として紐づきます。`record_type` / `record_id` はポリモーフィック関連で、`inquiries` へのDB外部キーはありません。
+
+複合一意インデックスは次の2つです。
+
+- `active_storage_attachments(record_type, record_id, name, blob_id)`
+- `active_storage_variant_records(blob_id, variation_digest)`
+
+## 4. 状態値
+
+| 列 | enum値 |
+|:---|:---|
+| `users.role` | `staff`, `manager`, `admin` |
+| `inquiries.status` | `0: draft`, `1: open`, `2: answered`, `3: approved`, `4: rejected` |
+| `knowledge_articles.status` | `0: draft`, `1: published`, `2: archived` |
+| `faq_entries.status` | `0: draft`, `1: published`, `2: archived` |
+
+詳細な列定義、インデックス、外部キーは [テーブル定義書](./table_definitions.md) を参照してください。
