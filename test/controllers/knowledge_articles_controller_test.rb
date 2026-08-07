@@ -132,7 +132,7 @@ class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, knowledge_article.body
   end
 
-  test "staff cannot publish draft knowledge_artcle" do
+  test "staff cannot publish draft knowledge_article" do
     sign_in users(:staff)
     knowledge_article = knowledge_articles(:staff_draft)
     patch publish_knowledge_article_path(knowledge_article)
@@ -190,6 +190,80 @@ class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "img.knowledge_article-image[alt='ナレッジ添付画像']",count: 1
   end
+
+  test "faq entry turns draft when faq_enabled switched false in published knowledge article" do
+    knowledge_article = knowledge_articles(:staff_published)
+    sign_in users(:admin)
+    faq_entry = knowledge_article.faq_entries.first
+
+    assert knowledge_article.faq_enabled?
+    assert faq_entry.published?
+
+    patch knowledge_article_path(knowledge_article), params: {
+      knowledge_article: {
+        faq_enabled: false
+      }
+    }
+    assert_redirected_to knowledge_article_path(knowledge_article)
+    assert_not knowledge_article.reload.faq_enabled?
+    assert_equal "draft", faq_entry.reload.status
+  end
+
+  test "faq entry sync with the article's status when faq enabled switched true" do
+    knowledge_article = knowledge_articles(:other_staff_published)
+    sign_in users(:admin)
+    faq_entry = knowledge_article.faq_entries.first
+
+    assert_not knowledge_article.faq_enabled?
+    assert_equal "draft", faq_entry.status
+    assert_equal "published", knowledge_article.status
+
+    patch knowledge_article_path(knowledge_article), params: {
+      knowledge_article: {
+        faq_enabled: true
+      }
+    }
+
+    assert_redirected_to knowledge_article_path(knowledge_article)
+    assert_equal "published", faq_entry.reload.status
+    assert_equal faq_entry.reload.status, knowledge_article.reload.status
+  end
+
+  test "published date will not changed if changed only title" do
+    sign_in users(:admin)
+    knowledge_article = knowledge_articles(:staff_published)
+    faq_entry = knowledge_article.faq_entries.first
+    original_published_at = faq_entry.published_at
+
+    patch knowledge_article_path(knowledge_article), params: {
+      knowledge_article: {
+        title: "Changed_title"
+      }
+    }
+    assert_redirected_to knowledge_article_path(knowledge_article)
+    assert_equal "Changed_title", knowledge_article.reload.title
+    assert_equal original_published_at, faq_entry.reload.published_at
+  end
+
+  test "faq entry turns draft when knowledge_article turns draft" do
+    sign_in users(:admin)
+    knowledge_article = knowledge_articles(:staff_published)
+    faq_entry = knowledge_article.faq_entries.first
+    assert_equal "published", knowledge_article.reload.status
+    assert_equal "published", faq_entry.status
+    
+    patch draft_knowledge_article_path(knowledge_article)
+    
+    assert_redirected_to knowledge_article_path(knowledge_article)
+    assert_equal "draft", knowledge_article.reload.status
+    assert_equal "draft", faq_entry.reload.status
+  end
+
+
+
+
+
+
 
 
 end

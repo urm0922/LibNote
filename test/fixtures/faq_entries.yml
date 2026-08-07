@@ -25,6 +25,6 @@ other_published_false_faq:
   knowledge_article: other_staff_published
   question: "other_staff_published?"
   answer: "other_staff_publishedについて"
-  status: published
+  status: draft
   generated_by_ai: true
   published_at: 2026-07-15 00:00:00

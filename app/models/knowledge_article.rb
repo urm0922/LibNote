@@ -20,9 +20,24 @@ class KnowledgeArticle < ApplicationRecord
   scope :by_status, ->(status) {
     where(status: statuses[status]) if status.present? && statuses.key?(status)
   }
+
+  def sync_faq_status!
+    faq_status = faq_enabled? ? status : "draft"
+
+    faq_entries.each do |faq_entry|
+      attributes = { status: faq_status }
+      if faq_status == "published" && !faq_entry.published?
+        attributes[:published_at] = Time.current
+      end
+
+      faq_entry.update!(attributes)
+    end
+  end
+
  
   validates :title, presence: true
   validates :body, presence: true
   validates :status, presence: true
   validates :published_at, presence: true, if: :published?
+
 end

@@ -22,13 +22,14 @@ class KnowledgeArticlesController < ApplicationController
   end
 
   def update
-    @knowledge_article.assign_attributes(knowledge_article_params)
-
-    if @knowledge_article.save
-      redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを更新しました"
-    else
-      render :edit, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      @knowledge_article.update!(knowledge_article_params)
+      @knowledge_article.sync_faq_status!
     end
+
+    redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを更新しました"
+  rescue ActiveRecord::RecordInvalid
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -49,53 +50,40 @@ class KnowledgeArticlesController < ApplicationController
 
   def publish
     if @knowledge_article.draft?
-
       ActiveRecord::Base.transaction do
         @knowledge_article.update!(
           status: :published,
           published_at: Time.current
         )
-    
-        if @knowledge_article.faq_enabled?
-          @knowledge_article.faq_entries.each do |faq_entry|
-            faq_entry.update!(
-              status: :published,
-              published_at: Time.current
-            )
-          end
-        end
+        @knowledge_article.sync_faq_status!
       end
+      
       redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを公開しました"
     elsif @knowledge_article.archived?
       redirect_to knowledge_article_path(@knowledge_article), alert: "このナレッジは公開できない状態です"
     else
       redirect_to knowledge_article_path(@knowledge_article), alert: "既に公開済みのナレッジです"
     end
+  rescue ActiveRecord::RecordInvalid
+    redirect_to edit_knowledge_article_path(@knowledge_article), alert: "ナレッジを公開できませんでした"
   end
   
   def draft
     if @knowledge_article.published?
 
       ActiveRecord::Base.transaction do
-        @knowledge_article.update!(
-          status: :draft
-        )
-    
-        if @knowledge_article.faq_enabled?
-          @knowledge_article.faq_entries.each do |faq_entry|
-            faq_entry.update!(
-              status: :draft
-            )
-          end
-        end
+        @knowledge_article.update!(status: :draft)
+        @knowledge_article.sync_faq_status!
       end
-
+      
       redirect_to knowledge_article_path(@knowledge_article), notice: "ナレッジを下書きに戻しました"
     elsif @knowledge_article.archived?
       redirect_to knowledge_article_path(@knowledge_article), alert: "このナレッジは下書きに戻せない状態です"
     else
       redirect_to knowledge_article_path(@knowledge_article), alert: "既に下書きのナレッジです"
     end
+  rescue ActiveRecord::RecordInvalid
+    redirect_to edit_knowledge_article_path(@knowledge_article), alert: "ナレッジを下書きに戻せませんでした"
   end
 
   private
