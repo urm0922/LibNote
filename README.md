@@ -197,7 +197,6 @@ erDiagram
 
 
 
-
 ### インストールと起動
 
 ```powershell
@@ -208,6 +207,7 @@ bundle exec rails server
 ```
 
 ブラウザで `http://localhost:3000` を開きます。
+
 
 ### OpenAI APIの設定
 
@@ -220,7 +220,8 @@ $env:OPENAI_API_KEY = "your-api-key"
 $env:OPENAI_MODEL = "gpt-5.6-terra"
 ```
 
-APIキーが未設定、またはAPI呼び出しに失敗した場合、AI下書きを必要とする承認処理は完了しません。APIキーをリポジトリへコミットしないでください。
+APIキーが未設定、またはAPI呼び出しに失敗した場合、AI下書きを必要とする承認処理は完了しません。
+
 
 ### 開発用初期ユーザー
 
@@ -236,21 +237,6 @@ APIキーが未設定、またはAPI呼び出しに失敗した場合、AI下書
 
 
 これらはローカル開発用です。公開環境では使用しないでください。
-
-## テスト
-
-全テストは次のコマンドで実行できます。
-
-```powershell
-bundle exec rails test
-```
-
-個別のテストを実行する例:
-
-```powershell
-bundle exec rails test test/models/inquiry_test.rb
-bundle exec rails test test/controllers/inquiries_controller_test.rb
-```
 
 
 
