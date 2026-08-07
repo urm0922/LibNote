@@ -1,10 +1,9 @@
 # LibNote（リブノート）
+<div align="left">
+  <img src="./app/assets/images/brand/libnote-logo.png" alt="LibNoteロゴ" width="420">
 
-### 図書館スタッフのための業務ナレッジ共有アプリ
-
-> 開発ステータス: MVP開発中（最終更新: 2026-08-07）
->
-> このREADMEでは、現在コード上で確認できる機能と、未実装の将来構想を分けて記載しています。
+  <h3>図書館スタッフのための業務ナレッジ共有アプリ</h3>
+</div>
 
 ## LibNoteとは
 
