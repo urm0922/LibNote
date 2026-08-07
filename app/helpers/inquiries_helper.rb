@@ -11,9 +11,5 @@ module InquiriesHelper
 
   def inquiry_status_class(inquiry)
     "status-#{inquiry.status}"
-  end
-
-  def can_edit_inquiry?(inquiry)
-    (inquiry.user_id == current_user.id && (inquiry.draft? || inquiry.open?)) || (current_user.manager? && !inquiry.approved?) || current_user.admin?
-  end
+  end  
 end

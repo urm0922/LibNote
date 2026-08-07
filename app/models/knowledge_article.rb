@@ -26,6 +26,7 @@ class KnowledgeArticle < ApplicationRecord
 
     faq_entries.each do |faq_entry|
       attributes = { status: faq_status }
+      # 内容編集を再公開扱いにしないため、draftからpublishedへ遷移するときだけ公開日時を更新する。
       if faq_status == "published" && !faq_entry.published?
         attributes[:published_at] = Time.current
       end

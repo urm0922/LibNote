@@ -47,7 +47,7 @@ class InquiriesController < ApplicationController
                              .by_status(params[:status])
                              .page(params[:page]).reverse_order
     else
-      @inquiries = current_user.inquiries.includes(:user, :category).page(params[:page]).reverse_order#order(created_at: :desc)
+      @inquiries = current_user.inquiries.includes(:user, :category).page(params[:page]).reverse_order
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])

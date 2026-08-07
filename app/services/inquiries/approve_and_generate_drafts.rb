@@ -12,7 +12,8 @@ class Inquiries::ApproveAndGenerateDrafts
   
     def call
       raise AlreadyApprovedError if inquiry.reload.approved?
-      
+
+      # 外部APIの応答待ちでは行ロックを保持せず、生成中の競合はロック取得後の再確認で防ぐ。
       generated = generator.call(inquiry: inquiry)
 
       ActiveRecord::Base.transaction do

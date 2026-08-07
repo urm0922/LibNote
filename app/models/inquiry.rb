@@ -5,6 +5,7 @@ class Inquiry < ApplicationRecord
               class_name: "User",
               optional: true
   has_many :comments, dependent: :destroy
+  # ナレッジ化後は記事を保全するため、紐づく問い合わせは管理者でも削除させない。
   has_one :knowledge_article, dependent: :restrict_with_error
   has_many_attached :images
   validates :images, 
