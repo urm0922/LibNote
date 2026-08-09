@@ -10,7 +10,7 @@ class KnowledgeArticlesController < ApplicationController
                                           .includes(:category, :author, :inquiry)
                                           .search_keyword(params[:q])
                                           .by_category(params[:category_id])
-                                          .page(params[:page]).reverse_order
+                                          .page(params[:page]).order(created_at: :desc)
   end
 
   def show
@@ -45,7 +45,7 @@ class KnowledgeArticlesController < ApplicationController
                                           .includes(:category, :author)
                                           .search_keyword(params[:q])
                                           .by_category(params[:category_id])
-                                          .page(params[:page]).reverse_order
+                                          .page(params[:page]).order(created_at: :desc)
   end
 
   def publish

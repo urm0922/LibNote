@@ -41,17 +41,17 @@ class InquiriesController < ApplicationController
       @inquiries = Inquiry.where.not(status: :draft)
                           .or(Inquiry.where(status: :draft, user: current_user))
                           .includes(:user, :category)
-                          .page(params[:page]).reverse_order
+                          .page(params[:page]).order(created_at: :desc)
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])
-                             .page(params[:page]).reverse_order
+                             .page(params[:page]).order(created_at: :desc)
     else
-      @inquiries = current_user.inquiries.includes(:user, :category).page(params[:page]).reverse_order
+      @inquiries = current_user.inquiries.includes(:user, :category).page(params[:page]).order(created_at: :desc)
       @inquiries = @inquiries.search_keyword(params[:q])
                              .by_category(params[:category_id])
                              .by_status(params[:status])
-                             .page(params[:page]).reverse_order
+                             .page(params[:page]).order(created_at: :desc)
     end
 
   end

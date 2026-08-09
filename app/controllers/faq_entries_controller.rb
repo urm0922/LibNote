@@ -5,7 +5,7 @@ class FaqEntriesController < ApplicationController
                            .includes(:knowledge_article)
                            .search_keyword(params[:q])
                            .page(params[:page])
-                           .reverse_order
+                           .order(created_at: :desc)
   end
 
   def show
