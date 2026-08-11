@@ -6,6 +6,7 @@ class FaqEntriesController < ApplicationController
                            .search_keyword(params[:q])
                            .page(params[:page])
                            .order(created_at: :desc)
+
   end
 
   def show

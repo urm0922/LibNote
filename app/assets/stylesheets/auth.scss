@@ -1,8 +1,29 @@
+.auth-cover {
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  margin: 0;
+  padding: 32px max(16px, calc((100% - 1080px) / 2)) 48px;
+  background-color: rgba(255, 255, 255, 0.2);
+  background-blend-mode: lighten;
+  background-position: center;
+  background-size: cover;
+  color: #2f261f;
+}
+
+.auth-cover--signup {
+  background-image: image-url("sign-up.png");
+}
+
+.auth-cover--signin {
+  background-image: image-url("sign-in.png");
+}
+
 .auth-page {
   width: min(480px, calc(100% - 32px));
   margin: 48px auto;
   color: #1f2937;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  
 }
 
 .auth-panel {

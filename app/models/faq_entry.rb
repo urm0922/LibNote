@@ -18,6 +18,7 @@ class FaqEntry < ApplicationRecord
     end
   }
 
+
   validates :question, presence: true
   validates :answer, presence: true
   validates :status, presence: true

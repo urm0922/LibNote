@@ -6,15 +6,21 @@
     </div>
     <%= link_to "問い合わせ新規作成", new_inquiry_path, class: "button button-primary" %>
   </header>
-  <div class="search-form row mt-3 ms-3 align-self-end">
-      <%= form_with url:knowledge_articles_path, method: :get, local: true do |f| %>
+  <div class="search-form">
+    <%= form_with url:knowledge_articles_path, method: :get, local: true, class: "search-form__form" do |f| %>
+      <div class="search-form__field">  
         <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+      </div>
+      <div class="search-form__field">
         <%= f.label :category_id, "カテゴリ" %>
         <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
+      </div>
+      <div class="search-form__actions">  
         <%= f.submit "検索する", name: nil %>
         <%= link_to "条件クリア", knowledge_articles_path, class: "button button-success"%>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
+  </div>
 
   <% if notice.present? %>
     <p class="flash flash-notice"><%= notice %></p>

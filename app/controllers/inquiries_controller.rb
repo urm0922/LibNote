@@ -82,7 +82,7 @@ class InquiriesController < ApplicationController
   end
 
   def confirm
-    @inquiries = current_user.inquiries.draft.page(params[:page]).reverse_order
+    @inquiries = current_user.inquiries.draft.page(params[:page]).order(created_at: :desc)
 
   end
 
