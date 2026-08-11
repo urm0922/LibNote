@@ -1,10 +1,10 @@
-<main class="inquiries-page">
+<main class="inquiries-page inquiries-page--index">
   <header class="page-header">
     <div>
       <h1>問い合わせ一覧</h1>
       <p><%= @inquiries.size %>件の問い合わせ</p>
     </div>
-    <%= link_to "新規作成", new_inquiry_path, class: "btn btn-primary" %>
+    <%= link_to "新規作成", new_inquiry_path, class: "button button-primary" %>
   </header>
   <div class="search-form row mt-3 ms-3 align-self-end">
       <%= form_with url:inquiries_path, method: :get, local: true do |f| %>
@@ -14,7 +14,7 @@
         <%= f.label :status, "ステータス" %>
         <%= f.select :status, Inquiry.statuses.keys.map { |status| [I18n.t("enums.inquiry.status.#{status}"), status] }, { include_blank: "選択してください", selected: params[:status] } %>
         <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", inquiries_path, class: "btn btn-success"%>
+        <%= link_to "条件クリア", inquiries_path, class: "button button-success"%>
       <% end %>
   </div>
 
@@ -50,7 +50,7 @@
                             alt: "問い合わせ添付画像" %>
             <% end %>
           <% end %>
-          <%= link_to "詳細", inquiry_path(inquiry), class: "btn btn-secondary" %>
+          <%= link_to "詳細", inquiry_path(inquiry), class: "button button-secondary" %>
         </article>
       <% end %>
     </div>
@@ -59,7 +59,7 @@
     <section class="empty-state">
       <h2>記事はまだありません</h2>
       <p>最初の問い合わせを作成できます。</p>
-      <%= link_to "問い合わせを作成", new_inquiry_path, class: "btn btn-primary" %>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
     </section>
   <% end %>
 </main>

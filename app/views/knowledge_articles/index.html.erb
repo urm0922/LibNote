@@ -1,10 +1,10 @@
-<main class="inquiries-page">
+<main class="knowledge-page knowledge-page--index">
   <header class="page-header">
     <div>
       <h1>承認済ナレッジ一覧</h1>
       <p><%= @knowledge_articles.size %>件の承認済ナレッジ</p>
     </div>
-    <%= link_to "問い合わせ新規作成", new_inquiry_path, class: "btn btn-primary" %>
+    <%= link_to "問い合わせ新規作成", new_inquiry_path, class: "button button-primary" %>
   </header>
   <div class="search-form row mt-3 ms-3 align-self-end">
       <%= form_with url:knowledge_articles_path, method: :get, local: true do |f| %>
@@ -12,7 +12,7 @@
         <%= f.label :category_id, "カテゴリ" %>
         <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
         <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", knowledge_articles_path, class: "btn btn-success"%>
+        <%= link_to "条件クリア", knowledge_articles_path, class: "button button-success"%>
       <% end %>
     </div>
 
@@ -43,7 +43,7 @@
               <%= image_tag image.variant(resize_to_limit: [225, 175]), class: "knowledge_article-image", alt: "ナレッジ添付画像" %>
             <% end %>
           <% end %>
-          <%= link_to "詳細", knowledge_article_path(knowledge_article), class: "btn btn-secondary" %>
+          <%= link_to "詳細", knowledge_article_path(knowledge_article), class: "button button-secondary" %>
         </article>
       <% end %>
     </div>
@@ -52,7 +52,7 @@
     <section class="empty-state">
       <h2>承認済ナレッジはまだありません</h2>
       <p>問い合わせを作成できます。</p>
-      <%= link_to "問い合わせを作成", new_inquiry_path, class: "btn btn-primary" %>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
     </section>
   <% end %>
 </main>

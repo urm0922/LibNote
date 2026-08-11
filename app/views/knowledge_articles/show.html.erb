@@ -1,4 +1,4 @@
-<main class="inquiries-page knowledge-page">
+<main class="knowledge-page knowledge-page--show">
   <nav class="page-nav">
     <% if @knowledge_article.published? %>
       <%= link_to "承認済ナレッジ一覧へ戻る", knowledge_articles_path %>
@@ -32,8 +32,8 @@
       </div>
       <% if current_user.admin? %>
         <div class="button-row">
-          <%= link_to "編集", edit_knowledge_article_path(@knowledge_article), class: "btn btn-secondary" %>
-          <%= button_to "削除", knowledge_article_path(@knowledge_article), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+          <%= link_to "編集", edit_knowledge_article_path(@knowledge_article), class: "button button-secondary" %>
+          <%= button_to "削除", knowledge_article_path(@knowledge_article), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
         </div>
       <% end %>
     </header>
@@ -82,7 +82,7 @@
             <%= simple_format(comment.body) %>
             <% if current_user.admin? %>
               <div class="comment-delete">
-                <%= button_to "削除", inquiry_comment_path(@knowledge_article.inquiry, comment), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
+                <%= button_to "削除", inquiry_comment_path(@knowledge_article.inquiry, comment), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
               </div>
             <% end %>
           </div>
@@ -91,10 +91,10 @@
     </section> 
         
     <% if current_user.admin? && @knowledge_article.draft? %>
-      <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "btn btn-success" %>
+      <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-success" %>
     <% end %>
     <% if current_user.admin? && @knowledge_article.published? %>
-      <%= button_to "ナレッジを下書きに戻す",  draft_knowledge_article_path(@knowledge_article), method: :patch, class: "btn btn-primary" %>
+      <%= button_to "ナレッジを下書きに戻す",  draft_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-primary" %>
     <% end %>
   </article>
 </main>

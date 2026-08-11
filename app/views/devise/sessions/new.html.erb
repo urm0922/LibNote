@@ -1,0 +1,46 @@
+<main class="auth-page">
+  <section class="auth-panel">
+    <h1>ログイン</h1>
+
+    <%= form_with model: resource, scope: resource_name, url: user_session_path, class: "auth-form" do |form| %>
+      <% if resource.errors.any? %>
+        <section class="error-summary">
+          <h2><%= resource.errors.count %>件のエラーがあります</h2>
+          <ul>
+            <% resource.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <div class="field">
+        <%= form.label :email, "メールアドレス" %>
+        <%= form.email_field :email, required: true, autocomplete: "email" %>
+      </div>
+
+      <div class="column-right">
+            <%= link_to "パスワードを忘れた場合", new_user_password_path %>
+      </div>
+
+      <div class="field">
+        <%= form.label :password, "パスワード" %>
+        <%= form.password_field :password, required: true, autocomplete: "password" %>
+      </div>
+
+      <div class="button-row">
+        <%= form.submit "ログイン", class: "button button-primary" %>
+      </div>
+      <% if devise_mapping.rememberable? %>
+        <div class="remember">
+          <%= form.check_box :remember_me %>
+          <%= form.label :remember, "ログインしたままにする" %>
+        </div>
+        <% end %>
+    <% end %>
+
+    <p class="auth-link">
+      <%= link_to "新規登録はこちら", new_user_registration_path %>
+    </p>
+  </section>
+</main>

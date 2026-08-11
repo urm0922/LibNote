@@ -1,4 +1,4 @@
-<main class="inquiries-page">
+<main class="inquiries-page inquiries-page--confirm">
   <header class="page-header">
     <div>
       <h1>下書き一覧</h1>
@@ -38,7 +38,7 @@
                             alt: "問い合わせ添付画像" %>
             <% end %>
           <% end %>
-          <%= link_to "詳細", inquiry_path(inquiry), class: "btn btn-secondary" %>
+          <%= link_to "詳細", inquiry_path(inquiry), class: "button button-secondary" %>
         </article>
       <% end %>
     </div>
@@ -47,7 +47,7 @@
     <section class="empty-state">
       <h2>下書きはありません</h2>
       <p>問い合わせを作成できます。</p>
-      <%= link_to "問い合わせを作成", new_inquiry_path, class: "btn btn-primary" %>
+      <%= link_to "問い合わせを作成", new_inquiry_path, class: "button button-primary" %>
     </section>
   <% end %>
 </main>

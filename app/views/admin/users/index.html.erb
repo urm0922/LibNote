@@ -19,7 +19,7 @@
           <%= f.label :active, "停止中", value: false %>
         </div>
         <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", admin_users_path, class: "btn btn-success"%>
+        <%= link_to "条件クリア", admin_users_path, class: "button button-success"%>
       <% end %>
   </div>
 
@@ -55,7 +55,7 @@
               </time>
             </div>
           </div>
-          <%= link_to "編集", edit_admin_user_path(user), class: "btn btn-success mt-2" %>
+          <%= link_to "編集", edit_admin_user_path(user), class: "button button-success mt-2" %>
         </article>
       <% end %>
     </div>
@@ -63,7 +63,7 @@
   <% else %>
     <section class="empty-state">
       <h2>ユーザーが存在しません</h2>
-      <%= link_to "ユーザーを作成", new_user_registration_path, class: "btn btn-primary" %>
+      <%= link_to "ユーザーを作成", new_user_registration_path, class: "button button-primary" %>
     </section>
   <% end %>
 </main>

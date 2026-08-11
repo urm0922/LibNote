@@ -50,7 +50,7 @@
   <% end %>
 
   <div class="button-row">
-    <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "btn btn-primary" %>
-    <%= link_to "キャンセル", inquiry.persisted? ? inquiry_path(inquiry) : inquiries_path, class: "btn btn-secondary" %>
+    <%= form.submit inquiry.persisted? ? "更新する" : "作成する", class: "button button-primary" %>
+    <%= link_to "キャンセル", inquiry.persisted? ? inquiry_path(inquiry) : inquiries_path, class: "button button-secondary" %>
   </div>
 <% end %>

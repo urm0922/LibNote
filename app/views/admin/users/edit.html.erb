@@ -46,15 +46,15 @@
 
   <div class="user-activate">
     <% if @user.active? %>
-      <%= link_to "このユーザーを「停止中」にする", deactivate_admin_user_path(@user), data: {turbo_method: :patch }, class: "btn btn-danger mt-3" %>
+      <%= link_to "このユーザーを「停止中」にする", deactivate_admin_user_path(@user), data: {turbo_method: :patch }, class: "button button-danger mt-3" %>
     <% elsif @user.deleted_at.nil? %>
-      <%= link_to "このユーザーを「利用中」にする", activate_admin_user_path(@user), data: {turbo_method: :patch }, class: "btn btn-primary mt-3" %>
+      <%= link_to "このユーザーを「利用中」にする", activate_admin_user_path(@user), data: {turbo_method: :patch }, class: "button button-primary mt-3" %>
     <% end %>
   </div>
   
   <div class="button-row">
-    <%= form.submit "更新する", class: "btn btn-success mt-3"%>
-    <%= link_to "キャンセル", admin_users_path, class: "btn btn-secondary mt-3" %>
+    <%= form.submit "更新する", class: "button button-success mt-3"%>
+    <%= link_to "キャンセル", admin_users_path, class: "button button-secondary mt-3" %>
   </div>
 <% end %>
 </main>
