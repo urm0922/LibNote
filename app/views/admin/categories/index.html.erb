@@ -11,8 +11,8 @@
       <%= form_with url:admin_categories_path, method: :get, local: true do |f| %>
         <%= f.hidden_field :sort, value: params[:sort] if params[:sort].present? %>
         <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
-        <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", admin_categories_path, class: "button button-success"%>
+        <%= f.submit "検索する", name: nil, class: "button button-primary" %>
+        <%= link_to "条件クリア", admin_categories_path, class: "button button-secondary"%>
       <% end %>
   </div>
 
@@ -47,7 +47,7 @@
                 <p>問い合わせ件数：<%= @inquiry_counts[category.id] || 0 %> 件</p>
                 <p>ナレッジ件数：<%= @knowledge_article_counts[category.id] || 0 %> 件 </p>
             </div>
-            <%= link_to "編集", edit_admin_category_path(category), class: "button button-success mt-2" %>
+            <%= link_to "編集", edit_admin_category_path(category), class: "button button-secondary mt-2" %>
             <% unless category_status(category) == "used" %>
               <%= button_to "削除", admin_category_path(category), method: :delete, class: "button button-danger mt-2", form: { data: { turbo_confirm: "削除してもよろしいですか？" } } %>
             <% end %>

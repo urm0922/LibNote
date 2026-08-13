@@ -18,7 +18,7 @@
   <article class="inquiry-detail">
     <header class="page-header">
       <div>
-        <div class="inquiry-card-meta">
+        <div class="list-card-meta">
           <span><%= @knowledge_article.category.name %></span>
           <time datetime="<%= @knowledge_article.published_at&.iso8601 %>">
             <% if @knowledge_article.published_at? %>
@@ -91,10 +91,10 @@
     </section> 
         
     <% if current_user.admin? && @knowledge_article.draft? %>
-      <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-success" %>
+      <%= button_to "ナレッジを公開する",  publish_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-primary" %>
     <% end %>
     <% if current_user.admin? && @knowledge_article.published? %>
-      <%= button_to "ナレッジを下書きに戻す",  draft_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-primary" %>
+      <%= button_to "ナレッジを下書きに戻す",  draft_knowledge_article_path(@knowledge_article), method: :patch, class: "button button-secondary" %>
     <% end %>
   </article>
 </main>

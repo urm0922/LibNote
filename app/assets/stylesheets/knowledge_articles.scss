@@ -3,16 +3,10 @@
   min-height: calc(100vh - 60px);
   margin: 0;
   padding: 32px max(16px, calc((100% - 1080px) / 2)) 48px;
-  background-color: rgba(255, 255, 255, 0.3);
-  background-image: image-url("knowledge-index.png");
-  background-blend-mode: lighten;
+  background-color: var(--color-background);
   background-position: center;
   background-size: cover;
   color: #2f261f;
-}
-
-.knowledge-page--show {
-  background-image: image-url("knowledges.png");
 }
 
 .knowledge-page .page-nav,
@@ -23,53 +17,18 @@
   margin-right: auto;
 }
 
-.knowledge-page .page-nav {
-  margin-bottom: 18px;
-}
-
-.knowledge-page .page-nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid rgba(109, 26, 7, 0.22);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.82);
-  color: #6d1a07;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 20px rgba(47, 38, 31, 0.08);
-}
-
-.knowledge-page .page-nav a:hover {
-  background: #ffffff;
-  text-decoration: none;
-}
-
 .knowledge-page .inquiry-detail {
   border: 1px solid rgba(109, 26, 7, 0.14);
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 18px 48px rgba(47, 38, 31, 0.14);
 }
 
-.knowledge-page .page-header {
-  align-items: center;
-  border-bottom: 1px solid rgba(109, 26, 7, 0.12);
-  padding-bottom: 22px;
-}
-
-.knowledge-page .page-header h1 {
-  color: #3b2219;
-  font-size: 30px;
-  line-height: 1.35;
-}
-
-.knowledge-page .inquiry-card-meta {
+.knowledge-page .list-card-meta {
   color: #7a665a;
   font-weight: 700;
 }
 
-.knowledge-page .inquiry-card-meta span {
+.knowledge-page .list-card-meta span {
   display: inline-flex;
   align-items: center;
   min-height: 28px;
@@ -172,33 +131,7 @@
     padding: 18px;
   }
 
-  .knowledge-page .page-header h1 {
-    font-size: 24px;
-  }
-
   .knowledge-page .comments {
     padding: 18px;
   }
-}
-
-.page a,
-.next a,
-.last a,
-.first a,
-.prev a {
-  color: black;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.page a:hover,
-.next a:hover,
-.last a:hover,
-.first a:hover,
-.prev a:hover {
-  color: black;
-}
-
-.current {
-  font-weight: bold;
 }

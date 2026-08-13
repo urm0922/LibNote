@@ -1,0 +1,16 @@
+<%= link_to inquiries_path,
+  class: class_names(
+    "side-nav__link",
+    "is-active": current_page?(inquiries_path)
+  ),
+  aria: { current: current_page?(inquiries_path) ? "page" : nil } do %>
+  問い合わせ一覧
+<% end %>
+
+<% inquiries_index_active =
+  controller_name == "inquiries" &&
+  action_name.in?(%w[index show edit]) %>
+
+<% inquiry_create_active =
+  controller_name == "inquiries" &&
+  action_name == "new" %>

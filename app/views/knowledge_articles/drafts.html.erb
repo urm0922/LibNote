@@ -18,8 +18,8 @@
         <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
       </div>
       <div class="search-form__actions">
-        <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", drafts_knowledge_articles_path, class: "button button-success"%>
+        <%= f.submit "検索する", name: nil, class: "button button-primary" %>
+        <%= link_to "条件クリア", drafts_knowledge_articles_path, class: "button button-secondary"%>
       </div>
     <% end %>
   </div>
@@ -34,9 +34,9 @@
   <% if @knowledge_articles.any? %>
     <div class="inquiry-list">
       <% @knowledge_articles.each do |knowledge_article| %>
-        <article class="inquiry-card">
-          <div class="inquiry-card-main">
-            <div class="inquiry-card-meta">
+        <article class="list-card">
+          <div class="list-card-main">
+            <div class="list-card-meta">
               <span><%= knowledge_article.category.name %></span>
               <time datetime="<%= knowledge_article.inquiry.approved_at&.iso8601 %>">
                 <%= l knowledge_article.inquiry.approved_at, format: :long %>

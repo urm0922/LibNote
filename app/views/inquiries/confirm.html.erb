@@ -16,9 +16,9 @@
     <% if @inquiries.any? %>
     <div class="inquiry-list">
       <% @inquiries.each do |inquiry| %>
-        <article class="inquiry-card">
-          <div class="inquiry-card-main">
-            <div class="inquiry-card-meta">
+        <article class="list-card">
+          <div class="list-card-main">
+            <div class="list-card-meta">
               <span class="status-badge <%= inquiry_status_class(inquiry) %>">
                 <%= inquiry_status_label(inquiry) %>
               </span>

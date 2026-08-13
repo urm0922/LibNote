@@ -1,5 +1,6 @@
 @import "token";
 @import "bootstrap";
+@import "components";
 @import "homes";
 @import "auth";
 @import "inquiries"; 
@@ -33,12 +34,19 @@ body {
 
 .nav-link {
   text-decoration: none;
+  color: var(--color-surface);
   font-family: sans-serif;
   }
 
-.nav-link a:hover {
-  opacity: 0.5;
+.nav-link:hover {
+  color: var(--color-nav);
 }
+
+.nav-user {
+  text-decoration: none;
+  color: var(--color-surface);
+  font-family: sans-serif;
+  }
 
 .site-header {
   display: flex;
@@ -91,6 +99,37 @@ body {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 16px;
+}
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.side-nav {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.side-nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.side-nav__link.is-active {
+  border-left-color: var(--color-primary);
+  background: #e8f0ed;
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 @media (max-width: 1200px) {

@@ -1,14 +1,26 @@
 :root {
     /* 配色 */
-    --color-background: #f6f3ee;
+    --color-background: #FFF5DB;
     --color-surface: #ffffff;
+    --color-nav: #f5b673;
     --color-text: #292724;
     --color-text-muted: #6b665f;
     --color-border: #d8d1c8;
-    --color-brand: #3b2c26;
+    --color-brand: #3f1200;
     --color-primary: #2f5d50;
+    --color-primary-hover: #244a40;
+    --color-secondary: #ffffff;
+    --color-secondary-hover: #f1ece4;
+    --color-secondary-text: #4a4038;
     --color-danger: #963d3d;
-    --color-success: #ff7700;
+    --color-danger-hover: #7c3030;
+    --color-focus: #b77932;
+    --color-success-surface: #ecfdf5;
+    --color-success-text: #047857;
+    --color-danger-surface: #fef2f2;
+    --color-danger-text: #b91c1c;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    
 
     /* 余白 */
     --space-1: 4px;

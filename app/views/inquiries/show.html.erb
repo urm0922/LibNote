@@ -13,7 +13,7 @@
   <article class="inquiry-detail">
     <header class="page-header">
       <div>
-        <div class="inquiry-card-meta">
+        <div class="list-card-meta">
           <span class="status-badge <%= inquiry_status_class(@inquiry) %>">
             <%= inquiry_status_label(@inquiry) %>
           </span>
@@ -53,7 +53,7 @@
       <% if policy(@comment).create?%>
         <%= form_with model:[@inquiry, @comment], local: true do |f| %>
           <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
-          <%= f.submit "送信", class: "button button-success mb-4" %>
+          <%= f.submit "送信", class: "button button-primary mb-4" %>
         <% end %>
       <% end %>
 

@@ -24,8 +24,8 @@
       </div>
 
       <div class="search-form__actions">
-        <%= f.submit "検索する", name: nil %>
-        <%= link_to "条件クリア", inquiries_path, class: "button button-success"%>
+        <%= f.submit "検索する", name: nil, class: "button button-primary" %>
+        <%= link_to "条件クリア", inquiries_path, class: "button button-secondary"%>
       </div>
     <% end %>
   </div>
@@ -40,9 +40,9 @@
   <% if @inquiries.any? %>
     <div class="inquiry-list">
       <% @inquiries.each do |inquiry| %>
-        <article class="inquiry-card">
-          <div class="inquiry-card-main">
-            <div class="inquiry-card-meta">
+        <article class="list-card">
+          <div class="list-card-main">
+            <div class="list-card-meta">
               <span class="status-badge <%= inquiry_status_class(inquiry) %>">
                 <%= inquiry_status_label(inquiry) %>
               </span>
