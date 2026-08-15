@@ -13,8 +13,6 @@
       </div>
       <div class="search-form__field">
         <%= f.label :category_id, "カテゴリ" %>
-      </div>
-      <div class="search-form__field">
         <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
       </div>
       <div class="search-form__actions">
