@@ -2,7 +2,7 @@ class FaqEntry < ApplicationRecord
   belongs_to :knowledge_article
   has_one :inquiry, through: :knowledge_article
 
-  enum status: { draft: 0, published: 1,archived: 2}
+  enum status: { draft: 0, published: 1, archived: 2}
   
   scope :publicly_visible, -> {
     published

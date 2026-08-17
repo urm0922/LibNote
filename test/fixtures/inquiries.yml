@@ -91,3 +91,11 @@ staff_special_approved:
   category: general
   status: approved
   approved_at: 2026-07-13 00:00:00
+
+staff_emergency_approved:
+  title: "自分の緊急の問い合わせ(approved)"
+  body: "自分の緊急の問い合わせ(approved)について"
+  user: staff
+  category: special
+  status: approved
+  approved_at: 2026-07-13 00:00:00

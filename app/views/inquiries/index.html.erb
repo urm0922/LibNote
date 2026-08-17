@@ -8,19 +8,20 @@
   </header>
   <div class="search-form">
     <%= form_with url:inquiries_path, method: :get, local: true, class: "search-form__form" do |f| %>
-      
+    
       <div class="search-form__field">
-        <%= f.text_field :q, value: params[:q], placeholder: "キーワード" %>
+        <%= f.label :q, "キーワード" %>
+        <%= f.text_field :q, value: params[:q], placeholder: "タイトル・本文から検索" %>
       </div>
 
       <div class="search-form__field">
         <%= f.label :category_id, "カテゴリ" %>
-        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "選択してください" } %>
+        <%= f.collection_select :category_id, @categories, :id, :name, { include_blank: "すべて", selected: params[:category_id] } %>
       </div>
       
       <div class="search-form__field">
         <%= f.label :status, "ステータス" %>
-        <%= f.select :status, Inquiry.statuses.keys.map { |status| [I18n.t("enums.inquiry.status.#{status}"), status] }, { include_blank: "選択してください", selected: params[:status] } %>
+        <%= f.select :status, Inquiry.statuses.keys.map { |status| [I18n.t("enums.inquiry.status.#{status}"), status] }, { include_blank: "すべて", selected: params[:status] } %>
       </div>
 
       <div class="search-form__actions">

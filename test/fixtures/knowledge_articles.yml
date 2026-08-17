@@ -33,3 +33,13 @@ other_staff_draft:
   body: "other staff special approvedについて"
   status: draft
   faq_enabled: true
+
+staff_emergency_published: 
+  inquiry: staff_emergency_approved
+  category: special
+  author: staff
+  title: "staff emergency approved"
+  body: "staff emergency approvedについて"
+  status: published
+  faq_enabled: true
+  published_at: 2026-07-15 00:00:00

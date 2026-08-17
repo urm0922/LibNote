@@ -28,3 +28,11 @@ other_published_false_faq:
   status: draft
   generated_by_ai: true
   published_at: 2026-07-15 00:00:00
+
+staff_emergency_published_faq:
+  knowledge_article: staff_emergency_published
+  question: "staff_emergency_published?"
+  answer: "staff_emergency_publishedについて"
+  status: published
+  generated_by_ai: true
+  published_at: 2026-07-16 00:00:00
