@@ -49,12 +49,14 @@
       <% end %>
     </div>  
     
-    <section class="comments ms-5 mt-5">
+    <section class="comments mt-5">
       <% if policy(@comment).create?%>
-        <%= form_with model:[@inquiry, @comment], local: true do |f| %>
-          <%= f.text_area :body, size: "60x3", placeholder: "コメントする" %>
-          <%= f.submit "送信", class: "button button-primary mb-4" %>
-        <% end %>
+        <div class="comment-input-form">
+          <%= form_with model:[@inquiry, @comment], local: true do |f| %>
+            <%= f.text_area :body, rows: 3, placeholder: "コメントする" %>
+            <%= f.submit "送信", class: "button button-primary mb-4" %>
+          <% end %>
+        </div>
       <% end %>
 
       <p>コメント件数：<%= @comments.count %> 件</p>

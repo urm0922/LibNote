@@ -1,0 +1,254 @@
+<style>
+  #libnote-dashboard-wireframe {
+    --font-size-base: 14px;
+    display: grid;
+    grid-template-columns: minmax(150px, 0.27fr) minmax(0, 1fr);
+    gap: 24px;
+    color: var(--foreground);
+  }
+
+  #libnote-dashboard-wireframe .ln-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #libnote-dashboard-wireframe .ln-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  #libnote-dashboard-wireframe .ln-brand-mark {
+    display: inline-grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  #libnote-dashboard-wireframe .ln-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  #libnote-dashboard-wireframe .ln-nav-link.is-current {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    font-weight: 500;
+  }
+
+  #libnote-dashboard-wireframe .ln-main {
+    min-width: 0;
+  }
+
+  #libnote-dashboard-wireframe .ln-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  #libnote-dashboard-wireframe .ln-heading h2,
+  #libnote-dashboard-wireframe .ln-section-heading h3 {
+    margin: 0;
+  }
+
+  #libnote-dashboard-wireframe .ln-heading p {
+    margin: 4px 0 0;
+  }
+
+  #libnote-dashboard-wireframe .ln-stats {
+    margin-bottom: 24px;
+  }
+
+  #libnote-dashboard-wireframe .ln-section + .ln-section {
+    margin-top: 24px;
+  }
+
+  #libnote-dashboard-wireframe .ln-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  #libnote-dashboard-wireframe .ln-count-note {
+    margin: 4px 0 0;
+  }
+
+  #libnote-dashboard-wireframe .ln-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  #libnote-dashboard-wireframe .ln-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--viz-series-1);
+  }
+
+  #libnote-dashboard-wireframe .ln-action-link {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 560px) {
+    #libnote-dashboard-wireframe {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    #libnote-dashboard-wireframe .ln-sidebar {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #libnote-dashboard-wireframe .ln-brand {
+      grid-column: 1 / -1;
+    }
+
+    #libnote-dashboard-wireframe .ln-heading {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div id="libnote-dashboard-wireframe">
+  <aside class="ln-sidebar" aria-label="管理メニューのイメージ">
+    <div class="ln-brand">
+      <span class="ln-brand-mark" aria-hidden="true"><i data-lucide="book-open"></i></span>
+      <span>LibNote</span>
+    </div>
+    <a class="ln-nav-link" href="#"><i data-lucide="home" aria-hidden="true"></i>トップ</a>
+    <a class="ln-nav-link" href="#"><i data-lucide="message-square" aria-hidden="true"></i>問い合わせ一覧</a>
+    <a class="ln-nav-link" href="#"><i data-lucide="library" aria-hidden="true"></i>ナレッジ一覧</a>
+    <a class="ln-nav-link is-current" href="#" aria-current="page"><i data-lucide="layout-dashboard" aria-hidden="true"></i>要対応</a>
+    <a class="ln-nav-link" href="#"><i data-lucide="tags" aria-hidden="true"></i>カテゴリ管理</a>
+    <a class="ln-nav-link" href="#"><i data-lucide="users" aria-hidden="true"></i>ユーザー管理</a>
+  </aside>
+
+  <main class="ln-main">
+    <div class="ln-heading">
+      <div>
+        <h2>要対応ダッシュボード</h2>
+        <p class="text-muted">管理者が次に処理する項目をまとめて確認</p>
+      </div>
+      <span class="text-small text-muted">2026年8月18日 更新</span>
+    </div>
+
+    <div class="viz-grid ln-stats" aria-label="対応状況の集計">
+      <section class="card viz-stat">
+        <span class="text-muted">未回答</span>
+        <strong class="viz-stat-value">8</strong>
+        <a href="#">問い合わせ一覧へ</a>
+      </section>
+      <section class="card viz-stat">
+        <span class="text-muted">承認待ち</span>
+        <strong class="viz-stat-value">3</strong>
+        <a href="#">承認対象を見る</a>
+      </section>
+      <section class="card viz-stat">
+        <span class="text-muted">公開待ち</span>
+        <strong class="viz-stat-value">5</strong>
+        <a href="#">下書きを確認</a>
+      </section>
+    </div>
+
+    <section class="ln-section" aria-labelledby="inquiries-heading">
+      <div class="ln-section-heading">
+        <div>
+          <h3 id="inquiries-heading">要対応の問い合わせ</h3>
+          <p class="text-small text-muted ln-count-note">回答済み・承認待ちを新しい順に表示</p>
+        </div>
+        <a href="#">すべて見る</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>問い合わせ</th>
+              <th>カテゴリ</th>
+              <th>状態</th>
+              <th>更新日</th>
+              <th><span class="sr-only">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>予約資料を別館で受け取る場合の処理</td>
+              <td>貸出・返却</td>
+              <td><span class="ln-status"><span class="ln-status-dot"></span>承認待ち</span></td>
+              <td class="text-nowrap">8月18日</td>
+              <td class="text-end"><a class="ln-action-link" href="#">確認する</a></td>
+            </tr>
+            <tr>
+              <td>利用者カード紛失時の本人確認</td>
+              <td>利用登録</td>
+              <td><span class="ln-status"><span class="ln-status-dot"></span>承認待ち</span></td>
+              <td class="text-nowrap">8月17日</td>
+              <td class="text-end"><a class="ln-action-link" href="#">確認する</a></td>
+            </tr>
+            <tr>
+              <td>閉館後に返却された付録の取り扱い</td>
+              <td>資料管理</td>
+              <td><span class="ln-status"><span class="ln-status-dot"></span>承認待ち</span></td>
+              <td class="text-nowrap">8月16日</td>
+              <td class="text-end"><a class="ln-action-link" href="#">確認する</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="ln-section" aria-labelledby="drafts-heading">
+      <div class="ln-section-heading">
+        <div>
+          <h3 id="drafts-heading">公開待ちナレッジ</h3>
+          <p class="text-small text-muted ln-count-note">AI下書きを確認し、編集・公開</p>
+        </div>
+        <a href="#">すべて見る</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>ナレッジ</th>
+              <th>カテゴリ</th>
+              <th>作成日</th>
+              <th><span class="sr-only">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>予約資料の受取館変更手順</td>
+              <td>貸出・返却</td>
+              <td class="text-nowrap">8月18日</td>
+              <td class="text-end"><a class="ln-action-link" href="#">編集する</a></td>
+            </tr>
+            <tr>
+              <td>利用者カード紛失時の対応</td>
+              <td>利用登録</td>
+              <td class="text-nowrap">8月17日</td>
+              <td class="text-end"><a class="ln-action-link" href="#">編集する</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>

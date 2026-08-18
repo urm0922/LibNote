@@ -2,35 +2,33 @@
   width: 100%;
   margin: 0;
   padding: 32px max(16px, calc((100% - 1080px) / 2)) 48px;
-  background-color: var(--color-background);
   background-position: center;
   background-size: cover;
-  color: #2f261f;
 }
 
 .status-draft {
   background: #f3f4f6;
-  color: #4b5563;
+  color: var(--color-text-muted);
 }
 
 .status-open {
   background: #eff6ff;
-  color: #1d4ed8;
+  color: var(--color-information);
 }
 
 .status-answered {
   background: #fef3c7;
-  color: #b45309;
+  color: var(--color-warning-text);
 }
 
 .status-approved {
   background: #dcfce7;
-  color: #15803d;
+  color: var(--color-success-text);
 }
 
 .status-rejected {
   background: #fee2e2;
-  color: #b91c1c;
+  color: var(--color-danger-text);
 }
 
 .inquiry-detail {
@@ -41,6 +39,10 @@
   border-top: 1px solid #e5e7eb;
   padding-top: 24px;
   line-height: 1.8;
+}
+
+.inquiries-page--show .inquiry-body {
+  border-top: 0;
 }
 
 .status-actions {
@@ -58,6 +60,11 @@
   padding: 24px;
 }
 
+.comment-input-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media (max-width: 720px) {
   .inquiries-page {
     width: min(100% - 24px, 1080px);
@@ -72,13 +79,4 @@
   .page-header h1 {
     font-size: 26px;
   }
-}
-
-.preview-image {
-  max-width: 450px;
-  max-height: 350px;
-}
-
-.inquiry-image {
-  max-width: 100%;
 }

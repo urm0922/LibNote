@@ -183,12 +183,12 @@ class KnowledgeArticlesControllerTest < ActionDispatch::IntegrationTest
     get knowledge_articles_path
 
     assert_response :success
-    assert_select "img.knowledge_article-image[alt='ナレッジ添付画像']",count: 1
+    assert_select "img.inquiry-image[alt='ナレッジ添付画像']",count: 1
 
     get knowledge_article_path(knowledge_article)
 
     assert_response :success
-    assert_select "img.knowledge_article-image[alt='ナレッジ添付画像']",count: 1
+    assert_select "img.inquiry-image[alt='ナレッジ添付画像']",count: 1
   end
 
   test "faq entry turns draft when faq_enabled switched false in published knowledge article" do

@@ -43,6 +43,7 @@ Rails.application.routes.draw do
         patch :deactivate
       end
     end
+    resources :dashboard
   end
 
   root :to => "homes#top"

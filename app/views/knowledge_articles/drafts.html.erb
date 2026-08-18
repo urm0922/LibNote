@@ -47,7 +47,7 @@
           <% if knowledge_article.inquiry.images.attached? %>
             <% images = knowledge_article.inquiry.images %>
             <% images.each do |image| %>
-              <%= image_tag image.variant(resize_to_limit: [225, 175]), class: "knowledge_article-image", alt: "ナレッジ添付画像" %>
+              <%= image_tag image.variant(resize_to_limit: [225, 175]), class: "inquiry-image", alt: "ナレッジ添付画像" %>
             <% end %>
           <% end %>
           <%= link_to "詳細", knowledge_article_path(knowledge_article), class: "button button-secondary" %>

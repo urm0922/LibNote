@@ -42,7 +42,8 @@
   </div>
 
   <% if inquiry.draft? %>
-    <div class="form-status">
+    <div class="field form-status">
+      <%= form.label :status, "保存状態を選択" %>
       <% status_options = %w[draft open].map { |status| [t(".status_options.#{status}"), status]} %>
       <%= form.select :status, options_for_select(status_options, inquiry.status) %>
     </div>
