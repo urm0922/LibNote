@@ -36,6 +36,7 @@
         <article class="list-card">
           <div class="list-card-main">
             <div class="list-card-meta">
+              <span><%= faq_entry.knowledge_article.category.name %></span>
               <time datetime="<%= faq_entry.published_at&.iso8601 %>">
                 <%= l faq_entry.published_at, format: :long %>
               </time>

@@ -4,6 +4,17 @@
   data-mobile-nav-target="menu"
   aria-label="メインメニュー"
 >
+<% if current_user.admin? %>
+    <div>
+      <%= link_to "要対応",
+        admin_dashboard_index_path,
+        class: class_names(
+          "nav-link",
+          "is-active": current_page?(admin_dashboard_index_path)
+        ) %>
+    </div>
+  <% end %>
+  
   <div>
     <%= link_to "トップ",
       root_path,

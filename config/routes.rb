@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
     
 
-  resources :faq_entries, only:[:index]
+  resources :faq_entries, only: :index
 
   namespace :admin do
     resources :categories, except: :show
@@ -43,7 +43,7 @@ Rails.application.routes.draw do
         patch :deactivate
       end
     end
-    resources :dashboard
+    resources :dashboard, only: :index
   end
 
   root :to => "homes#top"

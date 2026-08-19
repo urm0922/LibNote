@@ -1,0 +1,104 @@
+<main class="dashboard-page">
+  <header class="page-header">
+    <h1>要対応ダッシュボード</h1>
+  </header>
+
+  <section class="requiring-action-counts">
+    <% if @no_answers_count.positive? %>
+      <p><%= @no_answers_count %>件の回答待ち問い合わせがあります</p>
+    <% end %>
+    <% if @pending_approvals.any? %>
+      <p><%= @pending_approvals_count %>件の承認待ち問い合わせがあります</p>
+    <% end %>
+    <% if @pending_published_articles.any? %>
+      <p><%= @pending_published_articles_count %>件の公開待ちナレッジがあります</p>
+    <% end %>
+  </section>
+  
+  <% if notice.present? %>
+    <p class="flash flash-notice"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="flash flash-alert"><%= alert %></p>
+  <% end %>
+
+  <section class="pending-approvals">
+    <h3>承認待ちの問い合わせ</h3>
+    <% if @pending_approvals.any? %>
+      <div class="inquiry-list">
+        <% @pending_approvals.each do |pending_approval| %>
+          <article class="list-card">
+            <div class="list-card-main">
+              <div class="list-card-meta">
+                <span class="status-badge <%= inquiry_status_class(pending_approval) %>">
+                  <%= inquiry_status_label(pending_approval) %>
+                </span>
+                <span><%= pending_approval.category.name %></span>
+                <span><%= pending_approval.user.name %></span>
+                <time datetime="<%= pending_approval.created_at.iso8601 %>">
+                    <%= l pending_approval.created_at, format: :long %>
+                </time>
+              </div>
+              <h2><%= link_to pending_approval.title, inquiry_path(pending_approval) %></h2>
+              <p><%= truncate(pending_approval.body, length: 120) %></p>
+            </div>
+            <% if pending_approval.images.attached? %>
+              <% pending_approval.images.each do |image| %>
+                <%= image_tag image.variant(resize_to_limit: [225, 175]), 
+                                          class: "inquiry-image",
+                                          alt: "問い合わせ添付画像" %>
+              <% end %>
+            <% end %>
+            <%= link_to "詳細", inquiry_path(pending_approval), class: "button button-secondary" %>
+          </article>
+        <% end %>
+      </div>
+      <% if @pending_approvals_count >= 4 %>
+        <%= link_to "全て見る", inquiries_path(params: {status: :answered}), class: "view-all" %>
+      <% end %>
+    <% else %>
+      <section class="empty-state">
+        <h2>承認待ちの問い合わせはありません</h2>
+        <%= link_to "問い合わせを全て見る", inquiries_path, class: "button button-primary" %>
+      </section>
+    <% end %>
+  </section>
+
+  <section class="pending-published-articles">
+    <h3>公開待ちのナレッジ</h3>
+    <% if @pending_published_articles.any? %>
+      <div class="inquiry-list">
+        <% @pending_published_articles.each do |pending_published_article| %>
+          <article class="list-card">
+            <div class="list-card-main">
+              <div class="list-card-meta">
+                <span><%= pending_published_article.category.name %></span>
+                <span><%= pending_published_article.author.name %></span>
+                <time datetime="<%= pending_published_article.created_at.iso8601 %>">
+                    <%= l pending_published_article.created_at, format: :long %>
+                </time>
+              </div>
+              <h2><%= link_to pending_published_article.title, knowledge_article_path(pending_published_article) %></h2>
+              <p><%= truncate(pending_published_article.body, length: 120) %></p>
+            </div>
+            <% if pending_published_article.inquiry.images.attached? %>
+              <% pending_published_article.inquiry.images.each do |image| %>
+                <%= image_tag image.variant(resize_to_limit: [225, 175]), 
+                                          class: "inquiry-image",
+                                          alt: "問い合わせ添付画像" %>
+              <% end %>
+            <% end %>
+            <%= link_to "詳細", knowledge_article_path(pending_published_article), class: "button button-secondary" %>
+          </article>
+        <% end %>
+      </div>
+      <% if @pending_published_articles_count >= 4 %>
+        <%= link_to "全て見る", drafts_knowledge_articles_path, class: "view-all" %>
+      <% end %>
+    <% else %>
+      <section class="empty-state">
+        <h2>公開待ちのナレッジはありません</h2>
+      </section>
+    <% end %>
+  </section>
+</main>

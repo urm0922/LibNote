@@ -1,0 +1,36 @@
+.dashboard-page {
+    width: 100%;
+    margin: 0;
+    padding: 32px max(16px, calc((100% - 1080px) / 2)) 48px;
+}
+
+.pending-approvals {
+    margin: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.pending-published-articles {
+    margin: var(--space-3);
+}
+
+.requiring-action-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    margin: var(--space-3);
+    color: var(--color-danger);
+}
+
+.view-all {
+    color: var(--color-text);
+    text-decoration: none;
+}
+.view-all:hover{
+    text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+    .requiring-action-counts {
+       flex-direction: column;
+    }
+}
