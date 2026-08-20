@@ -61,15 +61,14 @@ LibNoteは、こうした現場課題のもとに、業務ナレッジを一元�
 
 ## 利用方法
 
-
-
 ### 1. ユーザー登録・ログイン
 
 初めて利用する場合はユーザー登録を行います。登録済みの場合は、メールアドレスとパスワードでログインします。
-
-<img width="959" height="437" alt="Image" src="https://github.com/user-attachments/assets/481e8bde-bc6a-4280-ac0a-424ccb63aed6" />
-
-
+<img
+  src="./docs/images/readme/01トップ.png"
+  alt="トップ画面"
+  width="800"
+>
 
 ### 2. ナレッジやFAQを検索
 
