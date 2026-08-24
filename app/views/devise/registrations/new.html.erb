@@ -3,6 +3,13 @@
     <section class="auth-panel">
       <h1>アカウント登録</h1>
 
+      <% if notice.present? %>
+        <p class="flash flash-notice"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="flash flash-alert"><%= alert %></p>
+      <% end %>
+
       <%= form_with model: resource, scope: resource_name, url: registration_path(resource_name), class: "auth-form" do |form| %>
         <% if resource.errors.any? %>
           <section class="error-summary">
