@@ -10,7 +10,7 @@ gem "sprockets-rails"
 
 # Use PostgreSQL on Render
 group :production do
-  gem "pg", "~> 1.1"
+  gem "pg"
 end
 
 # Use the Puma web server [https://github.com/puma/puma]
@@ -67,7 +67,8 @@ group :development, :test do
   gem "sqlite3", "~> 1.4"
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  # gem "debug", platforms: %i[ mri windows ]
+  gem "debug", platforms: %i[ mri mingw ] 
 end
 
 group :development do

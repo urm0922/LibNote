@@ -350,7 +350,7 @@ DEPENDENCIES
   kaminari
   minitest (~> 5.26)
   openai
-  pg (~> 1.1)
+  pg
   puma (>= 5.0)
   pundit
   rails (~> 7.1.6)
