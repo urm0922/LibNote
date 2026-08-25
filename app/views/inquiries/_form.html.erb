@@ -29,15 +29,21 @@
     <% if inquiry.images.attached? %>
       <% inquiry.images.each do |image| %>
         <% next unless image.blob.persisted? %>
-        <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "inquiry-image", alt: "問い合わせ添付画像" %>
+        <div class="attached-image">
+          <%= image_tag image.variant(resize_to_limit: [450, 350]), class: "inquiry-image", alt: "問い合わせ添付画像" %>
+          <% if inquiry.persisted? && policy(inquiry).destroy? %>
+            <%= link_to "画像を削除", image_inquiry_path(inquiry, attachment_id: image.id), class: "button button-danger",
+              data: {turbo_method: :delete, turbo_confirm: "この画像を削除してよろしいですか？"} %>
+          <% end %>
+        </div>
       <% end %>
       <div id="previews" ></div>
       <%= form.label :images, "画像を変更する" %>
-      <%= form.file_field :images, multiple: true, include_hidden: false %>
+      <%= form.file_field :images, multiple: true, include_hidden: false, accept: "image/jpeg,image/png,image/webp" %>
     <% else %>
       <div id="previews"></div>
       <%= form.label :images, "画像を添付する" %>
-      <%= form.file_field :images, multiple: true, include_hidden: false %>
+      <%= form.file_field :images, multiple: true, include_hidden: false, accept: "image/jpeg,image/png,image/webp" %>
     <% end %>
   </div>
 

@@ -585,4 +585,49 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, inquiry.title
   end
 
+  test "authorized staff can destroy attached images" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_open)
+
+    inquiry.images.attach(
+      io: File.open(file_fixture("sample1.png")),
+      filename: "sample1.png",
+      content_type: "image/png"
+    )
+
+    image = inquiry.images_attachments.first
+
+    assert_difference "ActiveStorage::Attachment.count", -1 do
+      delete image_inquiry_path(
+        inquiry,
+        attachment_id: image.id
+      )
+    end
+
+    assert_redirected_to edit_inquiry_path(inquiry)
+    assert_not inquiry.reload.images.attached?
+  end
+
+  test "unauthorized staff cannot destroy attached images" do
+    sign_in users(:staff)
+    inquiry = inquiries(:staff_answered)
+
+    inquiry.images.attach(
+      io: File.open(file_fixture("sample1.png")),
+      filename: "sample1.png",
+      content_type: "image/png"
+    )
+
+    image = inquiry.images_attachments.first
+
+    assert_no_difference "ActiveStorage::Attachment.count" do
+      delete image_inquiry_path(
+        inquiry,
+        attachment_id: image.id
+      )
+    end
+
+    assert inquiry.reload.images.attached?
+  end
+
 end

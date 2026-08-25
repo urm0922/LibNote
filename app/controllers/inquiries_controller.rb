@@ -125,6 +125,15 @@ class InquiriesController < ApplicationController
     end
   end
 
+  def destroy_image
+    authorize @inquiry, :destroy?
+
+    image = @inquiry.images_attachments.find(params[:attachment_id])
+    image.purge
+
+    redirect_to edit_inquiry_path(@inquiry), notice: "画像を削除しました"
+  end
+
   private
 
   def handle_unauthorized_inquiry(exception)

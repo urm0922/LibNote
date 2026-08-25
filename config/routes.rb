@@ -13,6 +13,10 @@ Rails.application.routes.draw do
       patch :mark_as_answered
       patch :approve
       patch :reject
+
+      delete "images/:attachment_id",
+             to: "inquiries#destroy_image",
+             as: :image
     end
     collection do
       get 'confirm'
