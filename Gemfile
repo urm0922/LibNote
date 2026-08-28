@@ -63,6 +63,8 @@ gem 'active_storage_validations'
 
 gem 'pundit'
 
+gem 'cloudinary'
+
 group :development, :test do
   # Use SQLite for local development and tests
   gem "sqlite3", "~> 1.4"
@@ -89,6 +91,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
 
 
   
