@@ -1,7 +1,7 @@
 databases:
   - name: LibNote-web-db
-    databaseName: libnote_web_db
-    user: urm922
+    databaseName: libnote_web_db_d5ug
+    user: libnote_web_db_d5ug_user
     region: Oregon
 
 services:
