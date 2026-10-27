@@ -48,7 +48,8 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips libpq5 nodejs && \
+    apt-get install --no-install-recommends -y ca-certificates curl libsqlite3-0 libvips libpq5 nodejs && \
+    update-ca-certificates && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
