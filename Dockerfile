@@ -19,7 +19,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config libpq-dev nodejs
+    apt-get install --no-install-recommends -y build-essential git libvips pkg-config libpq-dev ca-certificates
 
 
 # Install application gems
@@ -48,7 +48,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y ca-certificates curl libsqlite3-0 libvips libpq5 nodejs && \
+    apt-get install --no-install-recommends -y ca-certificates curl libsqlite3-0 libvips libpq5 && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
