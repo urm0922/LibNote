@@ -65,6 +65,8 @@ gem 'pundit'
 
 gem 'cloudinary'
 
+gem "aws-sdk-s3", require: false
+
 group :development, :test do
   # Use SQLite for local development and tests
   gem "sqlite3", "~> 1.4"
