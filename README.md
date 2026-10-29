@@ -1,5 +1,9 @@
 # LibNote（リブノート）
 
+<div align="left">
+  <img src="./app/assets/images/brand/libnote-logo.png" alt="LibNoteロゴ" width="420">
+</div>
+
 ### 図書館スタッフのための業務ナレッジ共有アプリ
 
 ## LibNoteとは
